@@ -13,7 +13,6 @@ const HomePage = () => {
 
   return (
     <div className="font-['Merriweather', serif] mt-10 md:mt-0 bg-[#F5E6C8] text-[#4A1A1A] overflow-x-hidden">
- 
         <Hero/>
         <About/>
         <FeaturedPlanner/>
