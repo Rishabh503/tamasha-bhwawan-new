@@ -22,7 +22,7 @@ export const Navbar = () => {
              <h1 className="text-2xl font-bold">Tamasha Bhawan</h1>
            </div>
            <nav className="hidden md:flex space-x-6">
-             <Link href='/newAbout'> About</Link>
+             <Link href='/about'> About</Link>
              <Link href='/contact'> Contact</Link>
              <Link href='/product'> Product</Link>
            </nav>
@@ -31,7 +31,7 @@ export const Navbar = () => {
   
           <div className='bg-red-500'>
            <nav className={` ${isOpen?"hidden":"block"} bg-[#4A1A1A] text-white md:hidden mt-[72px] -mb:10 items-start pl-10  justify-between  flex flex-col`}>
-             <Link className="hover:text-yellow-400 w-full  mt-2 font-semibold" href='/newAbout'> About</Link>
+             <Link className="hover:text-yellow-400 w-full  mt-2 font-semibold" href='/about'> About</Link>
              <Link className="hover:text-yellow-400 w-full  mt-2 font-semibold" href='/product'> Product</Link>
              <Link className="hover:text-yellow-400 w-full  mt-2 font-semibold" href='/contact'> Contact</Link>
            </nav>
