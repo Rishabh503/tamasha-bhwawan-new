@@ -296,10 +296,10 @@ export const globalMetadata = {
   alternates: {
     canonical: siteConfig.siteUrl,
   },
-  verification: {
-    google: "your-google-verification-code",
-    bing: "your-bing-verification-code",
+  image:{
+    url:"https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png"
   },
+ 
 };
 
 // Example implementation for Next.js pages

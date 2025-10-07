@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://tamashabhawan.com
+
+# Sitemaps
+Sitemap: https://tamashabhawan.com/sitemap.xml
