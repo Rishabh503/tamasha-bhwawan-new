@@ -1,7 +1,8 @@
 "use client"
+// import { seed } from '../../app/lib/seed';
 import { UserButton } from '@clerk/clerk-react';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LuMusic2 } from "react-icons/lu";
 
 
@@ -12,7 +13,9 @@ export const Navbar = () => {
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
-
+  // useEffect(()=>{
+  //   fetch("/api/test", { method: "POST" });
+  // },[])
   return (
    <>
    <div className="fixed top-0 w-full bg-[#4A1A1A] text-white py-4 px-8 flex justify-between items-center shadow-md z-50">

@@ -1,14 +1,14 @@
 import { Webhook } from "svix";
-import { headers } from "next/headers";
-import prisma from "../../../lib/prisma"; 
+import prisma from "../../../lib/prisma"
+
+export const runtime = "nodejs"; // still NEXT.JS
 
 export async function POST(req) {
-  const payload = await req.text();
-  const headerPayload = headers();
+  const body = await req.text();
 
-  const svix_id = headerPayload.get("svix-id");
-  const svix_timestamp = headerPayload.get("svix-timestamp");
-  const svix_signature = headerPayload.get("svix-signature");
+  const svix_id = req.headers.get("svix-id");
+  const svix_timestamp = req.headers.get("svix-timestamp");
+  const svix_signature = req.headers.get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
     return new Response("Missing headers", { status: 400 });
@@ -16,34 +16,29 @@ export async function POST(req) {
 
   const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
-  let evt;
+  let event;
   try {
-    evt = wh.verify(payload, {
+    event = wh.verify(body, {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     });
-  } catch (err) {
+  } catch {
     return new Response("Invalid signature", { status: 400 });
   }
 
- if (evt.type === "user.created") {
-  console.log("✅ user.created received");
-  console.log("User ID:", evt.data.id);
-  console.log("Emails:", evt.data.email_addresses);
+  if (event.type === "user.created") {
+    await prisma.user.upsert({
+      where: { clerkUserId: event.data.id },
+      update: {},
+      create: {
+        clerkUserId: event.data.id,
+        email: event.data.email_addresses?.[0]?.email_address ?? null,
+        onboardingCompleted: false,
+        role: "USER",
+      },
+    });
+  }
 
-  await prisma.user.create({
-    data: {
-      clerkUserId: evt.data.id,
-      email: evt.data.email_addresses?.[0]?.email_address || "no-email",
-      onboardingCompleted: false,
-      role: "USER",
-    },
-  });
-
-  console.log("✅ User saved in DB");
-}
-
-
-  return new Response("OK", { status: 200 });
+  return new Response("OK");
 }
