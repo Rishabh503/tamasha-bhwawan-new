@@ -1,6 +1,6 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import prisma from "@/lib/prisma";
+import prisma from "../../../lib/prisma"; 
 
 export async function POST(req) {
   const payload = await req.text();
