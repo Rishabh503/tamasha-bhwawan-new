@@ -56,7 +56,7 @@ model Course {
   title        String
   description  String?
   isPublished  Boolean  @default(false)
-
+ imageUrl     String? 
   chapters     Chapter[]
   enrollments  Enrollment[]
   tests        Test[]
@@ -92,6 +92,7 @@ model Video {
   description String?
   youtubeUrl  String
 
+order         Int
   chapterId   String
   chapter     Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
