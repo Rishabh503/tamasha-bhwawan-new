@@ -1,11 +1,12 @@
 "use client"
+import { UserButton } from '@clerk/clerk-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { LuMusic2 } from "react-icons/lu";
 
 
 export const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   // Function to toggle navbar
   const toggleNavbar = () => {
@@ -23,8 +24,10 @@ export const Navbar = () => {
            </div>
            <nav className="hidden md:flex space-x-6">
              <Link href='/about'> About</Link>
-             <Link href='/contact'> Contact</Link>
+             <Link href='/courses'> Courses</Link>
              <Link href='/product'> Product</Link>
+             <Link href='/sign-in'> Login</Link>
+             <UserButton/>
            </nav>
            <button className='md:hidden' onClick={()=>setIsOpen(!isOpen)}> <LuMusic2/> </button>
            </div>

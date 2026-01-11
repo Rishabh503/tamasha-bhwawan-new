@@ -1,8 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/general/NavBar";
-import { Footer } from "@/components/general/Footer";
-import { siteConfig ,globalMetadata, organizationSchema} from "@/data/metaData";
+import { Navbar } from "../components/general/NavBar";
+// import { Footer } from "@/components/general/Footer";
+// import { siteConfig ,globalMetadata, organizationSchema} from "@/data/metaData.js";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Footer } from "../components/general/Footer";
+import { globalMetadata, siteConfig } from "../data/metaData";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,14 +32,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+    <ClerkProvider>
+
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+        >
         <Navbar/>
+        
         {children}
         <Footer/>
       </body>
     </html>
+        </ClerkProvider>
   );
 }

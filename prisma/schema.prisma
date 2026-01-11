@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum QuestionType {
+  MCQ
+  SUBJECTIVE
+}
+
+/* =======================
+   USER
+======================= */
+
+model User {
+  id                   String   @id @default(cuid())
+  clerkUserId          String   @unique
+  email                String   @unique
+  name                 String?
+  phone                String?
+  onboardingCompleted  Boolean  @default(false)
+  role                 Role     @default(USER)
+
+  enrollments          Enrollment[]
+  testAttempts         TestAttempt[]
+
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+/* =======================
+   COURSE
+======================= */
+
+model Course {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  isPublished  Boolean  @default(false)
+
+  chapters     Chapter[]
+  enrollments  Enrollment[]
+  tests        Test[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/* =======================
+   CHAPTER
+======================= */
+
+model Chapter {
+  id        String   @id @default(cuid())
+  title     String
+  order     Int
+
+  courseId  String
+  course    Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  videos    Video[]
+
+  createdAt DateTime @default(now())
+}
+
+/* =======================
+   VIDEO
+======================= */
+
+model Video {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  youtubeUrl  String
+
+  chapterId   String
+  chapter     Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  notes       Note[]
+  pyqs        PYQ[]
+
+  createdAt   DateTime @default(now())
+}
+
+/* =======================
+   NOTES
+======================= */
+
+model Note {
+  id        String   @id @default(cuid())
+  content   String?
+  pdfUrl    String?
+
+  videoId  String
+  video    Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+/* =======================
+   PYQ (MCQ + Solution)
+======================= */
+
+model PYQ {
+  id           String   @id @default(cuid())
+  question     String
+  options      String[]   // ["A", "B", "C", "D"]
+  correctIndex Int
+  solution     String?
+
+  videoId      String
+  video        Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime @default(now())
+}
+
+/* =======================
+   ENROLLMENT (NO PAYMENT)
+======================= */
+
+model Enrollment {
+  id        String   @id @default(cuid())
+
+  userId    String
+  courseId  String
+
+  status    EnrollmentStatus @default(ACTIVE)
+
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId]) // one user can buy once
+}
+
+/* =======================
+   MOCK TEST
+======================= */
+
+model Test {
+  id        String   @id @default(cuid())
+  title     String
+  courseId  String?
+
+  course        Course?        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  questions     TestQuestion[]
+  testAttempts  TestAttempt[]   
+
+  createdAt DateTime @default(now())
+}
+
+/* =======================
+   TEST QUESTIONS
+======================= */
+
+model TestQuestion {
+  id          String       @id @default(cuid())
+  question    String
+  type        QuestionType
+
+  options     String[]
+  correctAns  String?
+
+  testId      String
+  test        Test   @relation(fields: [testId], references: [id], onDelete: Cascade)
+}
+
+/* =======================
+   TEST ATTEMPTS
+======================= */
+
+model TestAttempt {
+  id        String   @id @default(cuid())
+  userId    String
+  testId    String
+  score     Int?
+
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test      Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  
+
+  createdAt DateTime @default(now())
+}
