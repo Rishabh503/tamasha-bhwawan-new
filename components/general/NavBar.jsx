@@ -74,6 +74,9 @@ export const Navbar = () => {
               <Link href="/admin/payments" className="hover:text-yellow-400">
                 Manage Payments
               </Link>
+              <Link href="/admin/users" className="hover:text-yellow-400">
+                Manage User
+              </Link>
             </>
           )}
 
