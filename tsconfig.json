@@ -29,7 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/dev/types/**/*.ts"
-, "app/sign-in/[[...sign-in]]/page.jsx", "app/api/webhooks/clerk/route.js", "app/api/onboarding/route.js"  ],
+, "app/sign-in/[[...sign-in]]/page.jsx", "app/api/webhooks/clerk/route.js", "app/api/onboarding/route.js", "app/api/courses/[courseId]/route.js"  ],
   "exclude": [
     "node_modules"
   ]

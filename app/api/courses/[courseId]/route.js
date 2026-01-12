@@ -15,6 +15,7 @@ export async function GET(request, context) {
         title: true,
         description: true,
         isPublished: true,
+        price:true,
         chapters: {
           orderBy: { order: "asc" },
           select: {

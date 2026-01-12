@@ -34,9 +34,9 @@ export async function PATCH(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     await requireAdmin();
-
+const paramsAfter=await params
     await prisma.video.delete({
-      where: { id: params.videoId }
+      where: { id: paramsAfter.videoId }
     });
 
     return successResponse({ message: 'Video deleted successfully' });

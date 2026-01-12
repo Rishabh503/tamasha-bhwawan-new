@@ -1,16 +1,15 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, Clock, Users, Play } from 'lucide-react';
+import { BookOpen, Users, Play, IndianRupee } from 'lucide-react';
 
 export default function CoursesPage() {
   const router = useRouter();
   const [courses, setCourses] = useState([]);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('all'); // 'all' or 'enrolled'
+  const [activeTab, setActiveTab] = useState('all');
 
   useEffect(() => {
     fetchCourses();
@@ -21,7 +20,7 @@ export default function CoursesPage() {
       // Fetch all published courses
       const coursesRes = await fetch('/api/courses');
       const coursesData = await coursesRes.json();
-      console.log("coruses",coursesData)
+      
       if (coursesData.success) {
         setCourses(coursesData.data);
       }
@@ -43,22 +42,6 @@ export default function CoursesPage() {
 
   const isEnrolled = (courseId) => {
     return enrolledCourses.some(e => e.courseId === courseId);
-  };
-
-  const handleEnroll = async (courseId) => {
-    try {
-      const response = await fetch('/api/enrollments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ courseId })
-      });
-
-      if (response.ok) {
-        fetchCourses(); // Refresh
-      }
-    } catch (error) {
-      console.error('Error enrolling:', error);
-    }
   };
 
   const filteredCourses = activeTab === 'enrolled' 
@@ -130,7 +113,7 @@ export default function CoursesPage() {
                 key={course.id}
                 course={course}
                 isEnrolled={isEnrolled(course.id)}
-                onEnroll={() => handleEnroll(course.id)}
+                onEnroll={() => router.push(`/courses/${course.id}/enroll`)}
                 onView={() => router.push(`/courses/${course.id}`)}
               />
             ))}
@@ -141,8 +124,9 @@ export default function CoursesPage() {
   );
 }
 
-// Course Card Component
 function CourseCard({ course, isEnrolled, onEnroll, onView }) {
+  const isFree = parseFloat(course.price) === 0;
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
       {/* Course Image */}
@@ -161,6 +145,11 @@ function CourseCard({ course, isEnrolled, onEnroll, onView }) {
         {isEnrolled && (
           <div className="absolute top-4 right-4 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium">
             Enrolled
+          </div>
+        )}
+        {isFree && !isEnrolled && (
+          <div className="absolute top-4 right-4 bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+            FREE
           </div>
         )}
       </div>
@@ -188,6 +177,14 @@ function CourseCard({ course, isEnrolled, onEnroll, onView }) {
           </div>
         </div>
 
+        {/* Price */}
+        {!isFree && (
+          <div className="mb-4 flex items-baseline gap-1">
+            <IndianRupee size={20} className="text-blue-600" />
+            <span className="text-2xl font-bold text-blue-600">{course.price}</span>
+          </div>
+        )}
+
         {/* Action Button */}
         {isEnrolled ? (
           <button
@@ -202,7 +199,7 @@ function CourseCard({ course, isEnrolled, onEnroll, onView }) {
             onClick={onEnroll}
             className="w-full bg-gray-900 text-white py-2.5 rounded-lg hover:bg-gray-800 transition-colors font-medium"
           >
-            Enroll Now
+            {isFree ? 'Enroll Free' : 'Enroll Now'}
           </button>
         )}
       </div>

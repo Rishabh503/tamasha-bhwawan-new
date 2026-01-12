@@ -12,7 +12,8 @@ export async function GET() {
         _count: {
           select: {
             chapters: true,
-            enrollments: true
+            enrollments: true,
+            price:true
           }
         }
       },

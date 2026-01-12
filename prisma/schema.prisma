@@ -26,6 +26,11 @@ enum QuestionType {
   MCQ
   SUBJECTIVE
 }
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
 
 /* =======================
    USER
@@ -42,6 +47,7 @@ model User {
 
   enrollments          Enrollment[]
   testAttempts         TestAttempt[]
+  paymentRequests      PaymentRequest[]
 
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
@@ -57,6 +63,10 @@ model Course {
   description  String?
   isPublished  Boolean  @default(false)
  imageUrl     String? 
+ price        Decimal  @default(0)
+upiId        String?  
+  upiQrCode    String?  
+paymentRequests PaymentRequest[]
   chapters     Chapter[]
   enrollments  Enrollment[]
   tests        Test[]
@@ -80,6 +90,39 @@ model Chapter {
   videos    Video[]
 
   createdAt DateTime @default(now())
+}
+
+model PaymentRequest {
+  id                String        @id @default(cuid())
+  
+  userId            String
+  courseId          String
+  
+  // Payment Details
+  amount            Decimal
+  transactionId     String?       // UTR/Transaction ID provided by student
+  paymentScreenshot String        // Cloudinary URL of payment screenshot
+  
+  // Student Info (can update if missing)
+  studentName       String
+  studentEmail      String
+  studentPhone      String
+  
+  // Status
+  status            PaymentStatus @default(PENDING)
+  
+  // Admin Review
+  reviewedBy        String?       // Admin user ID who reviewed
+  reviewedAt        DateTime?
+  rejectionReason   String?       // Reason if rejected
+  
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course            Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  
+  @@index([userId, courseId, status])
 }
 
 /* =======================
