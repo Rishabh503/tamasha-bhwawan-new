@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
 import { requireAdmin } from '../../../../lib/auth';
-import { successResponse, errorResponse, unauthorizedResponse } from '@/lib/apiResponse';
+import { successResponse, errorResponse, unauthorizedResponse } from '../../../../lib/apiResponse';
 
 export async function PATCH(request, { params }) {
   try {
