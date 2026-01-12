@@ -1,50 +1,146 @@
-"use client"
-// import { seed } from '../../app/lib/seed';
-import { UserButton } from '@clerk/clerk-react';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+"use client";
+
+// import { getCurrentUser } from "../../app/lib/auth";
+import { UserButton, useUser } from "@clerk/nextjs";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { LuMusic2 } from "react-icons/lu";
 
-
 export const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const { user, isSignedIn } = useUser();
+  const [role, setRole] = useState("USER")
+  const [loading,setLoading]=useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
-  // Function to toggle navbar
-  const toggleNavbar = () => {
-    setIsOpen(!isOpen);
-  };
-  // useEffect(()=>{
-  //   fetch("/api/test", { method: "POST" });
-  // },[])
+    useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/user/profile");
+        const data = await res.json();
+        console.log(data)
+        setRole(data?.data?.role || null);
+      } catch (err) {
+        setRole(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+  console.log(role)
+  // const role = user // "admin" | "user"
+  const isAdmin = role === "ADMIN";
+// const isAdmin=f 
   return (
-   <>
-   <div className="fixed top-0 w-full bg-[#4A1A1A] text-white py-4 px-8 flex justify-between items-center shadow-md z-50">
-           <div   className="flex items-center space-x-3">
-            <Link  href='/'> 
-            <img src="https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png" alt="Logo" className="h-10 w-10" />
-            </Link>
-             <h1 className="text-2xl font-bold">Tamasha Bhawan</h1>
-           </div>
-           <nav className="hidden md:flex space-x-6">
-             <Link href='/about'> About</Link>
-             <Link href='/courses'> Courses</Link>
-             <Link href='/product'> Product</Link>
-             <Link href='/sign-in'> Login</Link>
-             <UserButton/>
-           </nav>
-           <button className='md:hidden' onClick={()=>setIsOpen(!isOpen)}> <LuMusic2/> </button>
-           </div>
-  
-          <div className='bg-red-500'>
-           <nav className={` ${isOpen?"hidden":"block"} bg-[#4A1A1A] text-white md:hidden mt-[72px] -mb:10 items-start pl-10  justify-between  flex flex-col`}>
-             <Link className="hover:text-yellow-400 w-full  mt-2 font-semibold" href='/about'> About</Link>
-             <Link className="hover:text-yellow-400 w-full  mt-2 font-semibold" href='/product'> Product</Link>
-             <Link className="hover:text-yellow-400 w-full  mt-2 font-semibold" href='/contact'> Contact</Link>
-           </nav>
-          </div>
-   </>
+    <>
+      {/* TOP BAR */}
+      <div className="fixed top-0 w-full bg-[#4A1A1A] text-white px-6 py-4 flex justify-between items-center shadow-md z-50">
+        {/* LOGO */}
+        <div className="flex items-center gap-3">
+          <Link href="/">
+            <img
+              src="https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png"
+              alt="Logo"
+              className="h-10 w-10"
+            />
+          </Link>
+          <h1 className="text-xl md:text-2xl font-bold tracking-wide">
+            Tamasha Bhawan
+          </h1>
 
+          {isAdmin && (
+            <span className="ml-2 px-2 py-1 text-xs rounded bg-yellow-500 text-black font-semibold">
+              ADMIN
+            </span>
+          )}
+        </div>
+
+        {/* DESKTOP NAV */}
+        <nav className="hidden md:flex items-center gap-6 font-medium">
+          {!isAdmin && (
+            <>
+              <Link href="/about" className="hover:text-yellow-400">About</Link>
+              <Link href="/courses" className="hover:text-yellow-400">Courses</Link>
+              <Link href="/product" className="hover:text-yellow-400">Product</Link>
+            </>
+          )}
+
+          {isAdmin && (
+            <>
+              <Link href="/admin/dashboard" className="hover:text-yellow-400">
+                Dashboard
+              </Link>
+              <Link href="/admin/payments" className="hover:text-yellow-400">
+                Manage Payments
+              </Link>
+            </>
+          )}
+
+          {!isSignedIn && (
+            <Link href="/sign-in" className="hover:text-yellow-400">
+              Login
+            </Link>
+          )}
+
+          {isSignedIn && (
+            <div className="ml-2">
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: "h-9 w-9",
+                  },
+                }}
+              />
+            </div>
+          )}
+        </nav>
+
+        {/* MOBILE TOGGLE */}
+        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+          <LuMusic2 size={22} />
+        </button>
+      </div>
+
+      {/* MOBILE MENU */}
+      <div
+        className={`md:hidden fixed top-[72px] left-0 w-full bg-[#4A1A1A] text-white transition-all duration-300 ${
+          isOpen ? "block" : "hidden"
+        }`}
+      >
+        <nav className="flex flex-col px-6 py-4 gap-4 font-semibold">
+          {!isAdmin && (
+            <>
+              <Link href="/about" onClick={() => setIsOpen(false)}>About</Link>
+              <Link href="/courses" onClick={() => setIsOpen(false)}>Courses</Link>
+              <Link href="/product" onClick={() => setIsOpen(false)}>Product</Link>
+            </>
+          )}
+
+          {isAdmin && (
+            <>
+              <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                Dashboard
+              </Link>
+              <Link href="/courses" onClick={() => setIsOpen(false)}>
+                Manage Courses
+              </Link>
+            </>
+          )}
+
+          {!isSignedIn && (
+            <Link href="/sign-in" onClick={() => setIsOpen(false)}>
+              Login
+            </Link>
+          )}
+
+          {isSignedIn && (
+            <div className="pt-2">
+              <UserButton />
+            </div>
+          )}
+        </nav>
+      </div>
+    </>
   );
 };
-
-// export default Navbar;

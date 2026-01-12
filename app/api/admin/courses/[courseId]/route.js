@@ -10,18 +10,31 @@ export async function GET(request, { params }) {
 const paramsi=await params
 const paramsid=paramsi.id
     const course = await prisma.course.findFirst({
-      where: { id: paramsid },
+       where: { id: paramsid },
+  include: {
+    chapters: {
+      orderBy: { order: 'asc' },
       include: {
-        chapters: {
+        videos: {
           orderBy: { order: 'asc' },
           include: {
-            videos: {
-              orderBy: { order: 'asc' }
-            }
+            notes: {
+              orderBy: { createdAt: 'desc' }
+            },
+            pyqs: true
           }
         }
       }
-    });
+    },
+    _count: {
+      select: {
+        chapters: true,
+        enrollments: true
+      }
+    }
+  }
+});
+
 
     if (!course) {
       return errorResponse('Course not found', 404);

@@ -15,6 +15,7 @@ export async function GET() {
         description: true,
         createdAt: true,
         imageUrl:true,
+        price:true,
         _count: {
           select: {
             chapters: true,

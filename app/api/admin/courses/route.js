@@ -13,7 +13,6 @@ export async function GET() {
           select: {
             chapters: true,
             enrollments: true,
-            price:true
           }
         }
       },
