@@ -178,15 +178,9 @@ export default function UserCoursePage({ params }) {
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 p-4 sticky top-0 z-10 shadow-sm">
+        <div className="bg-white border-b border-gray-200 p-4  top-0 z-10 shadow-sm">
           <div className="max-w-6xl mx-auto">
-            <button
-              onClick={() => router.push('/courses')}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2 transition-colors"
-            >
-              <ArrowLeft size={18} />
-              <span className="text-sm">Back to Courses</span>
-            </button>
+         
             <h1 className="text-2xl font-bold text-gray-800">{courseData.title}</h1>
             {activeVideo && (
               <p className="text-gray-600 mt-1">{activeVideo.title}</p>
@@ -195,7 +189,7 @@ export default function UserCoursePage({ params }) {
         </div>
 
         {/* Video & Content Area */}
-        <div className="max-w-6xl mx-auto p-6">
+        <div className="max-w-6xl  mx-auto p-6">
           {/* Video Player */}
           <VideoPlayer video={activeVideo} />
 

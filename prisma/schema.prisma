@@ -70,11 +70,29 @@ paymentRequests PaymentRequest[]
   chapters     Chapter[]
   enrollments  Enrollment[]
   tests        Test[]
-
+  qrCodeId     String?
+  qrCode       QRCode?  @relation(fields: [qrCodeId], references: [id])
+  
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
 
+enum QRCodeStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model QRCode {
+  id          String        @id @default(cuid())
+  name        String
+  upiId       String
+  qrImageUrl  String
+  status      QRCodeStatus  @default(ACTIVE)
+  courses     Course[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  @@index([status])
+}
 /* =======================
    CHAPTER
 ======================= */

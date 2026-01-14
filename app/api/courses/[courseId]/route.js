@@ -1,77 +1,47 @@
 import prisma from "../../../lib/prisma";
+import { successResponse, errorResponse, unauthorizedResponse } from '../../../lib/apiResponse';
 
-export async function GET(request, context) {
+export async function GET(request, { params }) {
   try {
-    const { params } = context;
     const { courseId } = await params;
 
     const course = await prisma.course.findUnique({
-      where: {
+      where: { 
         id: courseId,
-        isPublished: true,
+        isPublished: true 
       },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        isPublished: true,
-        price:true,
+      include: {
         chapters: {
-          orderBy: { order: "asc" },
-          select: {
-            id: true,
-            title: true,
-            order: true,
+          orderBy: { order: 'asc' },
+          include: {
             videos: {
-              orderBy: { order: "asc" },
-              select: {
-                id: true,
-                title: true,
-                description: true,
-                youtubeUrl: true,
-                order: true,
+              orderBy: { order: 'asc' },
+              include: {
                 notes: {
-                  select: {
-                    id: true,
-                    content: true,
-                    pdfUrl: true,
-                  },
+                  orderBy: { createdAt: 'desc' }
                 },
-                pyqs: {
-                  select: {
-                    id: true,
-                    question: true,
-                    options: true,
-                    correctIndex: true,
-                    solution: true,
-                  },
-                },
-              },
-            },
-          },
+                pyqs: true
+              }
+            }
+          }
         },
-      },
+        qrCode: true, // Include QR code for payment page
+        _count: {
+          select: {
+            chapters: true,
+            enrollments: true
+          }
+        }
+      }
     });
 
     if (!course) {
-      return Response.json(
-        { success: false, message: "Course not found" },
-        { status: 404 }
-      );
+      return errorResponse('Course not found', 404);
     }
 
-    return Response.json(
-      {
-        success: true,
-        data: course,
-      },
-      { status: 200 }
-    );
+    return successResponse(course);
   } catch (error) {
-    console.error("Error fetching course:", error);
-    return Response.json(
-      { success: false, message: "Failed to fetch course details" },
-      { status: 500 }
-    );
+    console.error('Error fetching course:', error);
+    return errorResponse('Failed to fetch course', 500);
   }
 }

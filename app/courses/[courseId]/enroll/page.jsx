@@ -1,8 +1,10 @@
+// app/courses/[courseId]/enroll/page.js - Updated with QR Code Display
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, BookOpen, Clock, Users, Check, Upload, AlertCircle } from 'lucide-react';
+import { ArrowLeft, BookOpen, Clock, Users, Check, Upload, AlertCircle, QrCode } from 'lucide-react';
 
 export default function CourseEnrollPage({ params }) {
   const router = useRouter();
@@ -13,7 +15,7 @@ export default function CourseEnrollPage({ params }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [enrollmentStatus, setEnrollmentStatus] = useState(null);
-  
+ 
   const [formData, setFormData] = useState({
     studentName: '',
     studentEmail: '',
@@ -22,7 +24,7 @@ export default function CourseEnrollPage({ params }) {
     amount: '',
     paymentScreenshot: null
   });
-  
+ 
   const [previewUrl, setPreviewUrl] = useState('');
   const [uploadProgress, setUploadProgress] = useState(false);
 
@@ -33,7 +35,7 @@ export default function CourseEnrollPage({ params }) {
   const loadData = async () => {
     try {
       setLoading(true);
-      const { courseId } =await params;
+      const { courseId } = await params;
 
       const courseRes = await fetch(`/api/courses/${courseId}`);
       const courseData = await courseRes.json();
@@ -74,12 +76,12 @@ export default function CourseEnrollPage({ params }) {
         setError('Please upload an image file');
         return;
       }
-      
+     
       if (file.size > 5 * 1024 * 1024) {
         setError('File size should be less than 5MB');
         return;
       }
-      
+     
       setFormData({ ...formData, paymentScreenshot: file });
       setPreviewUrl(URL.createObjectURL(file));
       setError('');
@@ -88,11 +90,6 @@ export default function CourseEnrollPage({ params }) {
 
   const uploadToImageKit = async (file) => {
     try {
-      // Convert file to base64
-      const buffer = await file.arrayBuffer();
-      const base64 = Buffer.from(buffer).toString('base64');
-
-      // Upload via your API route
       const uploadForm = new FormData();
       uploadForm.append("file", file);
 
@@ -120,7 +117,6 @@ export default function CourseEnrollPage({ params }) {
     setSubmitting(true);
 
     try {
-      // Validate
       if (!formData.studentName || !formData.studentEmail || !formData.studentPhone) {
         setError('Please fill all required fields');
         setSubmitting(false);
@@ -133,12 +129,10 @@ export default function CourseEnrollPage({ params }) {
         return;
       }
 
-      // Upload screenshot to ImageKit
       setUploadProgress(true);
       const screenshotUrl = await uploadToImageKit(formData.paymentScreenshot);
       setUploadProgress(false);
 
-      // Submit payment request
       const { courseId } = await params;
       const response = await fetch('/api/admin/payment-requests', {
         method: 'POST',
@@ -192,51 +186,9 @@ export default function CourseEnrollPage({ params }) {
     );
   }
 
-  if (course.price === 0) {
+  if (course.price === 0 || !course.qrCode) {
     router.push(`/courses/${course.id}`);
     return null;
-  }
-
-  if (enrollmentStatus?.isEnrolled) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center bg-white p-8 rounded-lg shadow-lg max-w-md">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check size={32} className="text-green-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Already Enrolled</h2>
-          <p className="text-gray-600 mb-6">You already have access to this course</p>
-          <button
-            onClick={() => router.push(`/courses/${course.id}`)}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
-          >
-            Go to Course
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (enrollmentStatus?.hasPendingRequest) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center bg-white p-8 rounded-lg shadow-lg max-w-md">
-          <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Clock size={32} className="text-yellow-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Payment Under Review</h2>
-          <p className="text-gray-600 mb-6">
-            Your payment request is being reviewed by admin. You'll be notified once approved.
-          </p>
-          <button
-            onClick={() => router.push('/courses')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
-          >
-            Back to Courses
-          </button>
-        </div>
-      </div>
-    );
   }
 
   if (success) {
@@ -270,7 +222,7 @@ export default function CourseEnrollPage({ params }) {
           {/* Course Details */}
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{course.title}</h1>
-            
+           
             {course.imageUrl && (
               <img
                 src={course.imageUrl}
@@ -326,31 +278,44 @@ export default function CourseEnrollPage({ params }) {
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Complete Payment</h2>
 
-            {/* UPI Details */}
-            {course.upiId && (
-              <div className="mb-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-3">Payment Details</h3>
-                <div className="space-y-2">
-                  <div>
-                    <span className="text-sm text-gray-600">UPI ID:</span>
-                    <p className="font-mono font-semibold text-gray-900">{course.upiId}</p>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Amount to Pay:</span>
-                    <p className="text-2xl font-bold text-blue-600">₹{course.price}</p>
-                  </div>
+            {/* QR Code Display */}
+            {course.qrCode && (
+              <div className="mb-6 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <QrCode size={24} className="text-blue-600" />
+                  <h3 className="font-semibold text-gray-900 text-lg">Scan to Pay</h3>
                 </div>
                 
-                {course.upiQrCode && (
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-600 mb-2">Scan QR Code:</p>
-                    <img
-                      src={course.upiQrCode}
-                      alt="UPI QR Code"
-                      className="w-48 h-48 mx-auto border-2 border-gray-200 rounded-lg"
-                    />
+                <div className="bg-white rounded-lg p-4 mb-4 shadow-sm">
+                  <img
+                    src={course.qrCode.qrImageUrl}
+                    alt={course.qrCode.name}
+                    className="w-64 h-64 mx-auto object-contain"
+                  />
+                </div>
+
+                <div className="space-y-3 bg-white rounded-lg p-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Payment Method:</span>
+                    <span className="font-semibold text-gray-900">{course.qrCode.name}</span>
                   </div>
-                )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">UPI ID:</span>
+                    <span className="font-mono text-sm font-semibold text-gray-900">
+                      {course.qrCode.upiId}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                    <span className="text-sm text-gray-600">Amount to Pay:</span>
+                    <span className="text-2xl font-bold text-blue-600">₹{course.price}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <p className="text-xs text-amber-800">
+                    <strong>Note:</strong> After payment, upload the screenshot below to complete enrollment
+                  </p>
+                </div>
               </div>
             )}
 
@@ -410,7 +375,7 @@ export default function CourseEnrollPage({ params }) {
                   value={formData.transactionId}
                   onChange={(e) => setFormData({ ...formData, transactionId: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Optional"
+                  placeholder="Optional - helps in faster verification"
                 />
               </div>
 
@@ -422,8 +387,9 @@ export default function CourseEnrollPage({ params }) {
                   type="number"
                   value={formData.amount}
                   onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-gray-50"
                   required
+                  readOnly
                 />
               </div>
 
@@ -431,13 +397,13 @@ export default function CourseEnrollPage({ params }) {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Payment Screenshot *
                 </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors">
                   {previewUrl ? (
                     <div className="space-y-2">
                       <img
                         src={previewUrl}
                         alt="Preview"
-                        className="max-h-48 mx-auto rounded"
+                        className="max-h-48 mx-auto rounded border border-gray-200"
                       />
                       <button
                         type="button"
@@ -445,15 +411,15 @@ export default function CourseEnrollPage({ params }) {
                           setPreviewUrl('');
                           setFormData({ ...formData, paymentScreenshot: null });
                         }}
-                        className="text-sm text-red-600 hover:text-red-700"
+                        className="text-sm text-red-600 hover:text-red-700 font-medium"
                       >
                         Remove
                       </button>
                     </div>
                   ) : (
-                    <label className="cursor-pointer">
+                    <label className="cursor-pointer block">
                       <Upload size={32} className="mx-auto text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600">Click to upload screenshot</p>
+                      <p className="text-sm text-gray-600 font-medium">Click to upload payment screenshot</p>
                       <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
                       <input
                         type="file"
@@ -469,9 +435,24 @@ export default function CourseEnrollPage({ params }) {
               <button
                 type="submit"
                 disabled={submitting || uploadProgress}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {uploadProgress ? 'Uploading Screenshot...' : submitting ? 'Submitting...' : 'Submit Payment Request'}
+                {uploadProgress ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Uploading Screenshot...
+                  </>
+                ) : submitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Check size={20} />
+                    Submit Payment Request
+                  </>
+                )}
               </button>
             </form>
           </div>

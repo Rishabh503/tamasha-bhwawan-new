@@ -326,8 +326,31 @@ function EditCourseModal({ course, onClose, onSuccess }) {
     title: course.title,
     description: course.description || "",
     imageUrl: course.imageUrl || "",
+    price: course.price?.toString() || "0",
+    qrCodeId: course.qrCodeId || ""
   });
+  const [qrCodes, setQrCodes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingQRs, setLoadingQRs] = useState(true);
+
+  useEffect(() => {
+    fetchQRCodes();
+  }, []);
+
+  const fetchQRCodes = async () => {
+    try {
+      const response = await fetch('/api/admin/qr-codes?status=ACTIVE');
+      const data = await response.json();
+      
+      if (data.success) {
+        setQrCodes(data.data);
+      }
+      setLoadingQRs(false);
+    } catch (error) {
+      console.error('Error fetching QR codes:', error);
+      setLoadingQRs(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -337,7 +360,11 @@ function EditCourseModal({ course, onClose, onSuccess }) {
       const response = await fetch(`/api/admin/courses/${course.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          price: parseFloat(formData.price),
+          qrCodeId: formData.qrCodeId || null
+        }),
       });
 
       if (response.ok) {
@@ -349,6 +376,8 @@ function EditCourseModal({ course, onClose, onSuccess }) {
       setLoading(false);
     }
   };
+
+  const selectedQR = qrCodes.find(qr => qr.id === formData.qrCodeId);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -372,6 +401,7 @@ function EditCourseModal({ course, onClose, onSuccess }) {
                 required
               />
             </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Description
@@ -385,6 +415,7 @@ function EditCourseModal({ course, onClose, onSuccess }) {
                 rows={4}
               />
             </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Image URL
@@ -398,7 +429,74 @@ function EditCourseModal({ course, onClose, onSuccess }) {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Price (₹)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.price}
+                onChange={(e) =>
+                  setFormData({ ...formData, price: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Payment QR Code
+              </label>
+              {loadingQRs ? (
+                <div className="text-sm text-gray-500">Loading QR codes...</div>
+              ) : (
+                <div>
+                  <select
+                    value={formData.qrCodeId}
+                    onChange={(e) =>
+                      setFormData({ ...formData, qrCodeId: e.target.value })
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-3"
+                  >
+                    <option value="">No QR Code (Free Course)</option>
+                    {qrCodes.map((qr) => (
+                      <option key={qr.id} value={qr.id}>
+                        {qr.name} - {qr.upiId}
+                      </option>
+                    ))}
+                  </select>
+
+                  {selectedQR && (
+                    <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <p className="text-sm font-medium text-gray-700 mb-2">
+                        Selected QR Code Preview:
+                      </p>
+                      <img
+                        src={selectedQR.qrImageUrl}
+                        alt={selectedQR.name}
+                        className="w-48 h-48 object-contain mx-auto rounded border border-gray-300"
+                      />
+                      <div className="mt-2 text-center">
+                        <p className="text-sm font-medium text-gray-900">{selectedQR.name}</p>
+                        <p className="text-xs text-gray-600">{selectedQR.upiId}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {qrCodes.length === 0 && (
+                    <p className="text-sm text-gray-500 mt-2">
+                      No active QR codes available. Create one in QR Code Management.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
+          
           <div className="flex gap-4 mt-6">
             <button
               type="submit"

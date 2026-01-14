@@ -7,34 +7,35 @@ import { successResponse, errorResponse, unauthorizedResponse } from '../../../.
 export async function GET(request, { params }) {
   try {
     await requireAdmin();
-const paramsi=await params
-const paramsid=paramsi.id
+    const paramsi = await params;
+    const paramsid = paramsi.id;
+    
     const course = await prisma.course.findFirst({
-       where: { id: paramsid },
-  include: {
-    chapters: {
-      orderBy: { order: 'asc' },
+      where: { id: paramsid },
       include: {
-        videos: {
+        chapters: {
           orderBy: { order: 'asc' },
           include: {
-            notes: {
-              orderBy: { createdAt: 'desc' }
-            },
-            pyqs: true
+            videos: {
+              orderBy: { order: 'asc' },
+              include: {
+                notes: {
+                  orderBy: { createdAt: 'desc' }
+                },
+                pyqs: true
+              }
+            }
+          }
+        },
+        qrCode: true, // Include QR code relation
+        _count: {
+          select: {
+            chapters: true,
+            enrollments: true
           }
         }
       }
-    },
-    _count: {
-      select: {
-        chapters: true,
-        enrollments: true
-      }
-    }
-  }
-});
-
+    });
 
     if (!course) {
       return errorResponse('Course not found', 404);
@@ -53,17 +54,22 @@ const paramsid=paramsi.id
 export async function PATCH(request, { params }) {
   try {
     await requireAdmin();
-
+const paramsAfter=await params
     const body = await request.json();
-    const { title, description, imageUrl, isPublished } = body;
+    const { title, description, imageUrl, isPublished, price, qrCodeId } = body;
 
     const course = await prisma.course.update({
-      where: { id: params.courseId },
+      where: { id: paramsAfter.courseId },
       data: {
         ...(title && { title }),
         ...(description !== undefined && { description }),
         ...(imageUrl !== undefined && { imageUrl }),
-        ...(isPublished !== undefined && { isPublished })
+        ...(isPublished !== undefined && { isPublished }),
+        ...(price !== undefined && { price }),
+        ...(qrCodeId !== undefined && { qrCodeId })
+      },
+      include: {
+        qrCode: true
       }
     });
 
@@ -76,6 +82,7 @@ export async function PATCH(request, { params }) {
     return errorResponse('Failed to update course', 500);
   }
 }
+
 
 export async function DELETE(request, { params }) {
   try {

@@ -12,8 +12,8 @@ const VideoPlayer = ({ video }) => {
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden">
       <iframe
-        width="100%"
-        height="100%"
+        width="80%"
+        height="60%"
         src={video.youtubeUrl}
         title={video.title}
         frameBorder="0"
