@@ -66,6 +66,15 @@ export const Navbar = () => {
               <Link href="/courses" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Courses</Link>
               <Link href="/#videos" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Masterclasses</Link>
               <Link href="/#chronicle" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Chronicle</Link>
+              {isSignedIn && (
+                <Link 
+                  href="/live-quiz/join" 
+                  className="px-3.5 py-1.5 rounded-full bg-[#3b0d11] border border-[#d4af37]/60 text-[#f5e6a8] hover:bg-[#521319] hover:border-[#d4af37] transition font-cinzel text-xs uppercase tracking-widest font-semibold flex items-center gap-1.5 shadow-[0_0_12px_rgba(212,175,55,0.25)]"
+                >
+                  <span className="w-2 h-2 rounded-full bg-[#d4af37] animate-pulse"></span>
+                  Live Quiz
+                </Link>
+              )}
             </>
           )}
 
@@ -131,6 +140,16 @@ export const Navbar = () => {
               <Link href="/courses" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Courses</Link>
               <Link href="/#videos" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Masterclasses</Link>
               <Link href="/#chronicle" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Sangeet Chronicle</Link>
+              {isSignedIn && (
+                <Link 
+                  href="/live-quiz/join" 
+                  onClick={() => setIsOpen(false)} 
+                  className="px-3.5 py-2.5 rounded-xl bg-[#3b0d11] border border-[#d4af37]/60 text-[#f5e6a8] font-bold flex items-center gap-2 shadow"
+                >
+                  <span className="w-2 h-2 rounded-full bg-[#d4af37] animate-pulse"></span>
+                  Join Live Quiz
+                </Link>
+              )}
             </>
           )}
 
