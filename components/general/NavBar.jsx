@@ -1,6 +1,5 @@
 "use client";
 
-// import { getCurrentUser } from "../../app/lib/auth";
 import { UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,16 +7,15 @@ import { LuMusic2 } from "react-icons/lu";
 
 export const Navbar = () => {
   const { user, isSignedIn } = useUser();
-  const [role, setRole] = useState("USER")
-  const [loading,setLoading]=useState(false)
+  const [role, setRole] = useState("USER");
+  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await fetch("/api/user/profile");
         const data = await res.json();
-        console.log(data)
         setRole(data?.data?.role || null);
       } catch (err) {
         setRole(null);
@@ -28,61 +26,72 @@ export const Navbar = () => {
 
     fetchUser();
   }, []);
-  console.log(role)
-  // const role = user // "admin" | "user"
+
   const isAdmin = role === "ADMIN";
-// const isAdmin=f 
+
   return (
     <>
       {/* TOP BAR */}
-      <div className="fixed top-0 w-full bg-[#4A1A1A] text-white px-6 py-4 flex justify-between items-center shadow-md z-50">
+      <header className="fixed top-0 w-full bg-[#1c0406]/95 backdrop-blur-md border-b border-[#d4af37]/30 text-white px-6 md:px-12 py-3.5 flex justify-between items-center shadow-xl z-50">
         {/* LOGO */}
         <div className="flex items-center gap-3">
-          <Link href="/">
+          <Link href="/" className="flex items-center gap-3 group">
             <img
               src="https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png"
-              alt="Logo"
-              className="h-10 w-10"
+              alt="Tamasha Bhawan Logo"
+              className="h-11 w-11 object-contain group-hover:scale-105 transition-transform"
             />
+            <div>
+              <h1 className="font-cinzel text-lg md:text-xl font-black tracking-wider text-stone-100 group-hover:text-[#f5e6a8] transition-colors">
+                TAMASHA BHAWAN
+              </h1>
+              <span className="font-cormorant text-[11px] tracking-widest uppercase text-[#d4af37] block -mt-1 font-semibold">
+                Sanctuary of Sangeet
+              </span>
+            </div>
           </Link>
-          <h1 className="text-xl md:text-2xl font-bold tracking-wide">
-            Tamasha Bhawan
-          </h1>
 
           {isAdmin && (
-            <span className="ml-2 px-2 py-1 text-xs rounded bg-yellow-500 text-black font-semibold">
+            <span className="ml-2 px-2 py-0.5 text-[10px] rounded-full gold-gradient-bg text-[#1a0406] font-cinzel font-black tracking-wider">
               ADMIN
             </span>
           )}
         </div>
 
         {/* DESKTOP NAV */}
-        <nav className="hidden md:flex items-center gap-6 font-medium">
+        <nav className="hidden md:flex items-center gap-7 font-cinzel text-xs uppercase tracking-widest font-semibold">
           {!isAdmin && (
             <>
-              <Link href="/about" className="hover:text-yellow-400">About</Link>
-              <Link href="/courses" className="hover:text-yellow-400">Courses</Link>
-              <Link href="/product" className="hover:text-yellow-400">Product</Link>
+              <Link href="/about" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">About</Link>
+              <Link href="/courses" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Courses</Link>
+              <Link href="/#videos" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Masterclasses</Link>
+              <Link href="/#chronicle" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Chronicle</Link>
             </>
           )}
 
           {isAdmin && (
             <>
-              <Link href="/admin/dashboard" className="hover:text-yellow-400">
+              <Link href="/admin/dashboard" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">
                 Dashboard
               </Link>
-              <Link href="/admin/payments" className="hover:text-yellow-400">
-                Manage Payments
+              <Link href="/admin/payments" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">
+                Payments
               </Link>
-              <Link href="/admin/users" className="hover:text-yellow-400">
-                Manage User
+              <Link href="/admin/users" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">
+                Users
+              </Link>
+              <Link href="/admin/live-quiz" className="px-3.5 py-1.5 rounded-full bg-[#3b0d11] border border-[#d4af37]/60 text-[#f5e6a8] hover:bg-[#521319] hover:border-[#d4af37] transition">
+                Live Quizzes
               </Link>
             </>
           )}
 
           {!isSignedIn && (
-            <Link href="/sign-in" className="hover:text-yellow-400">
-              Login
+            <Link 
+              href="/sign-in" 
+              className="px-4 py-1.5 rounded-lg gold-gradient-bg text-[#1a0406] font-bold hover:scale-105 transition shadow"
+            >
+              Portal Login
             </Link>
           )}
 
@@ -91,7 +100,7 @@ export const Navbar = () => {
               <UserButton
                 appearance={{
                   elements: {
-                    avatarBox: "h-9 w-9",
+                    avatarBox: "h-9 w-9 ring-2 ring-[#d4af37]/50",
                   },
                 }}
               />
@@ -100,40 +109,43 @@ export const Navbar = () => {
         </nav>
 
         {/* MOBILE TOGGLE */}
-        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+        <button 
+          className="md:hidden p-2 rounded-lg bg-[#3b0d11] border border-[#d4af37]/40 text-[#f5e6a8]" 
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle Navigation Menu"
+        >
           <LuMusic2 size={22} />
         </button>
-      </div>
+      </header>
 
       {/* MOBILE MENU */}
       <div
-        className={`md:hidden fixed top-[72px] left-0 w-full bg-[#4A1A1A] text-white transition-all duration-300 ${
+        className={`md:hidden fixed top-[68px] left-0 w-full bg-[#1c0406]/98 border-b border-[#d4af37]/30 text-white transition-all duration-300 z-40 ${
           isOpen ? "block" : "hidden"
         }`}
       >
-        <nav className="flex flex-col px-6 py-4 gap-4 font-semibold">
+        <nav className="flex flex-col px-6 py-6 gap-4 font-cinzel text-xs uppercase tracking-widest font-semibold">
           {!isAdmin && (
             <>
-              <Link href="/about" onClick={() => setIsOpen(false)}>About</Link>
-              <Link href="/courses" onClick={() => setIsOpen(false)}>Courses</Link>
-              <Link href="/product" onClick={() => setIsOpen(false)}>Product</Link>
+              <Link href="/about" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">About</Link>
+              <Link href="/courses" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Courses</Link>
+              <Link href="/#videos" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Masterclasses</Link>
+              <Link href="/#chronicle" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Sangeet Chronicle</Link>
             </>
           )}
 
           {isAdmin && (
             <>
-              <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                Dashboard
-              </Link>
-              <Link href="/courses" onClick={() => setIsOpen(false)}>
-                Manage Courses
-              </Link>
+              <Link href="/admin/dashboard" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Dashboard</Link>
+              <Link href="/admin/payments" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Payments</Link>
+              <Link href="/admin/users" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Users</Link>
+              <Link href="/admin/live-quiz" onClick={() => setIsOpen(false)} className="text-[#f5e6a8] font-bold">Live Quiz Platform</Link>
             </>
           )}
 
           {!isSignedIn && (
-            <Link href="/sign-in" onClick={() => setIsOpen(false)}>
-              Login
+            <Link href="/sign-in" onClick={() => setIsOpen(false)} className="mt-2 py-2 text-center rounded-lg gold-gradient-bg text-[#1a0406] font-bold">
+              Portal Login
             </Link>
           )}
 

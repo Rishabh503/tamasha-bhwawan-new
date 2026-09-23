@@ -1,27 +1,27 @@
 "use client";
 import { useState } from 'react';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, ChevronDown } from 'lucide-react';
 
 const FAQ_DATA = [
   {
     question: "What Makes Learning at Tamasha Bhawan Comprehensive?",
-    answer: "At Tamasha Bhawan, students will have access to both practical and theoretical knowledge of Hindustani classical music. This means that in addition to learning the technical aspects of music, students will also gain an understanding of the cultural and historical context in which the music was created. By providing a comprehensive education that includes both practical and theoretical knowledge, Tamasha Bhawan ensures that students are equipped with the skills and knowledge needed to become well-rounded and accomplished musicians."
+    answer: "At Tamasha Bhawan, disciples receive both foundational practical taaleem and rigorous theoretical knowledge of Hindustani classical music. Beyond vocal technique and ragas, students master the cultural, philosophical, and historical lineage of Gharanas. This comprehensive approach equips learners to perform with artistic depth and excel in prestigious evaluations."
   },
   {
     question: "How Can You Get Admission to Tamasha Bhawan?",
-    answer: "To get admission to Tamasha Bhawan, interested individuals must submit an audio recording of their voice and fill out a registration form. This ensures that the institution can properly evaluate the participant's skills and provide them with the appropriate level of training. By requiring these steps, Tamasha Bhawan is able to maintain a high level of quality in its students and ensure that everyone has the opportunity to excel in their musical journey."
+    answer: "To ensure customized guidance, aspirants submit an audio recording of their vocal rendition along with a brief registration profile. Our gurus assess voice texture, swara alignment, and riyaz baseline to assign the candidate to the ideal syllabus tier."
   },
   {
     question: "Does Tamasha Bhawan Offer Both Online and Offline Classes?",
-    answer: "Yes! Tamasha Bhawan offers both online and offline classes for students interested in learning Hindustani classical music. This means that regardless of your location and schedule, you can still have access to the institution's exceptional teaching and resources. Whether you prefer the convenience of online classes or the immersive experience of in-person classes, Tamasha Bhawan has something to offer for everyone."
+    answer: "Yes! Tamasha Bhawan offers high-definition interactive live online masterclasses worldwide (with active disciples across India, Dubai, UK, and USA) as well as offline studio sessions in Delhi. All students access recorded archives, notation dossiers, and live practice sabhas."
   },
   {
     question: "How Does Tamasha Bhawan Make Learning Fun and Engaging?",
-    answer: "Tamasha Bhavan is a vibrant institution that offers a unique and engaging approach to learning Hindustani classical music. With a focus on providing a fun and entertaining experience, students are able to learn about the rich tradition and history of classical music in an exciting and dynamic way. The institution is named after the word 'tamasha', which means entertainment, and it certainly lives up to its name by providing an enjoyable and stimulating environment for students to learn and grow."
+    answer: "True to the word 'Tamasha' (joyful celebration), our riyaz ecosystem turns traditional rigor into an exhilarating voyage. Through gamified evaluations, live riyaz circles, and interactive peer sabhas, classical music becomes an uplifting daily devotion rather than a tedious drill."
   },
   {
     question: "How Does Tamasha Bhawan Help Students Get Certified?",
-    answer: "At Tamasha Bhawan, individuals who get admission have the opportunity to take exams from Gandharva Mahavidyalaya Pune of vocal. This provides students with an additional level of recognition and certification that can help them advance their careers in music. By partnering with Gandharva Mahavidyalaya Pune, Tamasha Bhawan is able to provide students with access to a wide range of resources and opportunities that can help them achieve their goals in music."
+    answer: "Tamasha Bhawan prepares candidates for certified examinations affiliated with Gandharva Mahavidyalaya Pune, ranging from Prarambhik to Visharad diplomas, as well as UGC NET Music preparation. Our structured curriculum and mock evaluation arenas ensure top distinctions."
   }
 ];
 
@@ -37,37 +37,65 @@ export const FAQSection = () => {
   };
 
   return (
-    <section className="py-16 px-4 md:px-8 lg:px-16 bg-gradient-to-b from-amber-100 to-amber-50">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <MessageSquare className="inline-block text-amber-600 mb-2" size={32} />
-          <h2 className="text-4xl font-bold text-amber-800 mb-4">Frequently Asked Questions</h2>
-          <div className="h-1 w-24 bg-amber-600 mx-auto"></div>
+    <section className="py-20 px-4 md:px-8 lg:px-16 bg-gradient-to-b from-[#160305] via-[#1f0508] to-[#140305] relative overflow-hidden">
+      {/* Ambient background glow */}
+      <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-[#d4af37]/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="max-w-4xl mx-auto relative z-10">
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#2a070c] border border-[#d4af37]/40 text-[#d4af37] mb-3 shadow">
+            <MessageSquare size={22} />
+          </div>
+          <span className="text-xs font-cinzel font-bold uppercase tracking-[0.25em] text-[#d4af37] block mb-1">
+            Common Inquiries
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-cinzel text-white mb-4">
+            Frequently Asked Questions
+          </h2>
+          <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto"></div>
         </div>
         
         <div className="space-y-4">
-          {FAQ_DATA.map((faq, index) => (
-            <div 
-              key={index} 
-              className="border border-amber-300 rounded-lg overflow-hidden bg-amber-50 shadow-md"
-            >
-              <button
-                className="w-full p-4 text-left flex justify-between items-center focus:outline-none hover:bg-amber-100/50 transition-colors"
-                onClick={() => toggleFAQ(index)}
+          {FAQ_DATA.map((faq, index) => {
+            const isExpanded = isOpen === index;
+
+            return (
+              <div 
+                key={index} 
+                className={`rounded-2xl border transition-all duration-300 overflow-hidden shadow-lg ${
+                  isExpanded
+                    ? "bg-[#25070b] border-[#d4af37] ring-1 ring-[#d4af37]/40"
+                    : "bg-[#1a0406]/90 border-[#d4af37]/25 hover:border-[#d4af37]/50"
+                }`}
               >
-                <span className="text-lg font-medium text-amber-800">{faq.question}</span>
-                <span className="text-amber-600 text-2xl flex-shrink-0 ml-4">
-                  {isOpen === index ? '−' : '+'}
-                </span>
-              </button>
-              
-              {isOpen === index && (
-                <div className="p-4 bg-amber-100/50 border-t border-amber-300">
-                  <p className="text-amber-800">{faq.answer}</p>
-                </div>
-              )}
-            </div>
-          ))}
+                <button
+                  className="w-full p-5 text-left flex justify-between items-center focus:outline-none transition-colors group"
+                  onClick={() => toggleFAQ(index)}
+                >
+                  <span className={`text-base sm:text-lg font-cinzel font-bold tracking-wide transition ${
+                    isExpanded ? "text-[#f5e6a8]" : "text-white group-hover:text-[#f5e6a8]"
+                  }`}>
+                    {faq.question}
+                  </span>
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all ml-4 shrink-0 ${
+                    isExpanded
+                      ? "bg-[#d4af37] text-[#160305] border-[#d4af37] rotate-180"
+                      : "bg-[#2e080c] text-[#d4af37] border-[#d4af37]/40"
+                  }`}>
+                    <ChevronDown size={18} />
+                  </span>
+                </button>
+                
+                {isExpanded && (
+                  <div className="px-5 pb-5 pt-1 border-t border-[#d4af37]/15 bg-[#140305]/60 animate-fadeIn">
+                    <p className="text-[#f5e6a8]/90 font-cormorant text-lg sm:text-xl leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

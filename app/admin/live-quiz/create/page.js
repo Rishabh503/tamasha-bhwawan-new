@@ -1,0 +1,506 @@
+"use client";
+
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { FaPlus, FaTrash, FaClock, FaCheck, FaCopy, FaImage, FaUpload, FaTimes } from "react-icons/fa";
+import { GiMusicalNotes } from "react-icons/gi";
+
+export default function CreateLiveQuiz() {
+  const router = useRouter();
+  const fileInputRef = useRef(null);
+  const [title, setTitle] = useState("");
+  const [questions, setQuestions] = useState([
+    { 
+      questionText: "", 
+      imageUrl: "", 
+      options: ["Option A", "Option B", "Option C", "Option D"], 
+      correctAns: "Option A", 
+      timeLimitSeconds: 30 
+    }
+  ]);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const activeQuestion = questions[activeIdx] || questions[0];
+
+  const addQuestion = () => {
+    const newQ = { 
+      questionText: "", 
+      imageUrl: "", 
+      options: ["Option A", "Option B", "Option C", "Option D"], 
+      correctAns: "Option A", 
+      timeLimitSeconds: 30 
+    };
+    setQuestions([...questions, newQ]);
+    setActiveIdx(questions.length);
+  };
+
+  const duplicateQuestion = (idx) => {
+    const qToCopy = JSON.parse(JSON.stringify(questions[idx]));
+    const newQuestions = [...questions];
+    newQuestions.splice(idx + 1, 0, qToCopy);
+    setQuestions(newQuestions);
+    setActiveIdx(idx + 1);
+  };
+
+  const removeQuestion = (idx) => {
+    if (questions.length <= 1) return;
+    const newQuestions = questions.filter((_, i) => i !== idx);
+    setQuestions(newQuestions);
+    setActiveIdx(Math.max(0, idx - 1));
+  };
+
+  const handleActiveQuestionChange = (field, value) => {
+    const newQuestions = [...questions];
+    newQuestions[activeIdx][field] = value;
+    setQuestions(newQuestions);
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check size limit ~5MB
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image size should be less than 5MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64Url = event.target?.result;
+      handleActiveQuestionChange("imageUrl", base64Url);
+      // If question prompt is empty, set friendly fallback
+      if (!activeQuestion.questionText.trim()) {
+        handleActiveQuestionChange("questionText", "Refer to the image for question and options");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = () => {
+    handleActiveQuestionChange("imageUrl", "");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const setStandardPlaceholderOptions = () => {
+    const standardOpts = ["Option A", "Option B", "Option C", "Option D"];
+    const newQuestions = [...questions];
+    newQuestions[activeIdx].options = standardOpts;
+    if (!standardOpts.includes(newQuestions[activeIdx].correctAns)) {
+      newQuestions[activeIdx].correctAns = "Option A";
+    }
+    setQuestions(newQuestions);
+  };
+
+  const handleOptionChange = (optIndex, value) => {
+    const newQuestions = [...questions];
+    const oldVal = newQuestions[activeIdx].options[optIndex];
+    newQuestions[activeIdx].options[optIndex] = value;
+    
+    // If this option was selected as correct answer, keep correctAns synced
+    if (newQuestions[activeIdx].correctAns === oldVal && oldVal !== "") {
+      newQuestions[activeIdx].correctAns = value;
+    }
+    setQuestions(newQuestions);
+  };
+
+  const setCorrectOption = (opt) => {
+    if (!opt) return;
+    handleActiveQuestionChange("correctAns", opt);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!title.trim()) {
+      alert("Please enter a Quiz Title");
+      return;
+    }
+
+    // Validation
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
+      if (!q.questionText.trim() && !q.imageUrl) {
+        alert(`Question #${i + 1} needs either a text question prompt or an uploaded image.`);
+        setActiveIdx(i);
+        return;
+      }
+      
+      // Auto-fill prompt if image exists but prompt is blank
+      if (!q.questionText.trim() && q.imageUrl) {
+        q.questionText = "Refer to the image for question and options";
+      }
+
+      const hasEmptyOpt = q.options.some(o => !o.trim());
+      if (hasEmptyOpt) {
+        alert(`Question #${i + 1} has empty options. Please fill all 4 options or use the default Option A/B/C/D placeholders.`);
+        setActiveIdx(i);
+        return;
+      }
+      if (!q.correctAns || !q.options.includes(q.correctAns)) {
+        alert(`Question #${i + 1} has no correct answer selected. Click the radio letter button next to the correct option.`);
+        setActiveIdx(i);
+        return;
+      }
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/live-quiz/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, questions })
+      });
+      if (res.ok) {
+        router.push(`/admin/live-quiz`);
+      } else {
+        alert("Error saving quiz template");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen lg:h-screen flex flex-col dark-velvet-bg text-white font-sans-modern overflow-hidden">
+      {/* Studio Top Bar */}
+      <header className="px-4 py-3 bg-[#180305]/95 border-b border-[#d4af37]/30 flex flex-wrap justify-between items-center gap-3 shrink-0 z-20">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link
+            href="/admin/live-quiz"
+            className="px-3 py-1.5 bg-[#2a070c] hover:bg-[#3d0b11] border border-[#d4af37]/40 text-[#f5e6a8] rounded-lg font-cinzel text-xs font-bold transition shrink-0"
+          >
+            ← Back
+          </Link>
+          <div className="flex items-center gap-2 min-w-0">
+            <GiMusicalNotes className="text-[#d4af37] text-lg shrink-0 hidden sm:inline" />
+            <input 
+              type="text" 
+              required 
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="bg-[#120204] border border-[#d4af37]/40 focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] focus:outline-none px-3.5 py-1.5 rounded-lg text-white font-cinzel font-bold text-sm sm:text-base w-60 sm:w-80 md:w-96 placeholder-[#e6ca65]/40 transition" 
+              placeholder="Quiz Title (e.g. Raga Lakshana & Gharana Mastery)"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          <span className="text-xs font-cinzel text-[#e6ca65]/80 hidden md:inline">
+            {questions.length} Question{questions.length === 1 ? "" : "s"} Total
+          </span>
+          <button 
+            onClick={handleSubmit}
+            disabled={loading}
+            className="px-5 py-2 rounded-xl gold-gradient-bg text-[#1a0406] font-cinzel font-bold text-xs uppercase tracking-wider shadow-md hover:scale-105 transition disabled:opacity-50 flex items-center gap-1.5"
+          >
+            <FaCheck /> {loading ? "Saving..." : "Publish Quiz Template"}
+          </button>
+        </div>
+      </header>
+
+      {/* Main Studio Split Body */}
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        {/* Left Column: Question Navigator */}
+        <aside className="w-full lg:w-72 bg-[#1a0406]/90 border-b lg:border-b-0 lg:border-r border-[#d4af37]/25 flex flex-col shrink-0">
+          <div className="p-3 border-b border-[#d4af37]/20 flex justify-between items-center bg-[#140305]/70">
+            <span className="text-[11px] font-cinzel font-bold uppercase tracking-wider text-[#d4af37]">
+              Questions List
+            </span>
+            <button
+              type="button"
+              onClick={addQuestion}
+              className="px-2.5 py-1 rounded-lg bg-[#2e080c] hover:bg-[#3d0b11] border border-[#d4af37]/40 text-[#f5e6a8] font-cinzel font-bold text-[11px] flex items-center gap-1 transition"
+            >
+              <FaPlus className="text-[9px]" /> Add
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-2.5 space-y-2 flex lg:flex-col overflow-x-auto lg:overflow-x-hidden">
+            {questions.map((q, idx) => {
+              const isActive = idx === activeIdx;
+              const isFilled = q.questionText.trim().length > 0;
+              const hasAns = !!q.correctAns;
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => setActiveIdx(idx)}
+                  className={`cursor-pointer p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 shrink-0 lg:shrink w-48 lg:w-full ${
+                    isActive
+                      ? "bg-gradient-to-r from-[#3b0d11] to-[#25060a] border-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.2)] ring-1 ring-[#d4af37]"
+                      : "bg-[#140305]/60 border-[#d4af37]/20 hover:border-[#d4af37]/40 hover:bg-[#200508]"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className={`w-6 h-6 rounded-full font-cinzel font-bold text-xs flex items-center justify-center shrink-0 border ${
+                      isActive ? "bg-[#d4af37] text-[#160305] border-[#d4af37]" : "bg-[#25060a] text-[#d4af37] border-[#d4af37]/30"
+                    }`}>
+                      {idx + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <span className="text-xs font-medium text-white truncate block">
+                        {q.questionText || `Question ${idx + 1}`}
+                      </span>
+                      <span className="text-[10px] text-[#e6ca65]/60 font-sans block">
+                        {hasAns ? "✓ Key set" : "⚠ No key"} • {q.timeLimitSeconds}s
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    {questions.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeQuestion(idx);
+                        }}
+                        className="p-1 text-stone-500 hover:text-red-400 rounded transition"
+                        title="Delete Question"
+                      >
+                        <FaTrash className="text-[10px]" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </aside>
+
+        {/* Right Column: Active Question Editor Workspace */}
+        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#160305]/40">
+          <div className="max-w-4xl w-full space-y-4">
+            {/* Header of Active Question */}
+            <div className="flex flex-wrap justify-between items-center gap-2 pb-3 border-b border-[#d4af37]/25">
+              <div className="flex items-center gap-3">
+                <span className="px-3.5 py-1 bg-[#3b0d11] text-[#f5e6a8] border border-[#d4af37]/40 rounded-full font-cinzel font-bold text-xs">
+                  Question {activeIdx + 1} of {questions.length}
+                </span>
+                <span className="text-xs text-[#e6ca65]/80 font-cormorant italic">
+                  Click the letter circle (A, B, C, D) to set the Answer Key
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => duplicateQuestion(activeIdx)}
+                  className="px-3 py-1.5 text-xs font-cinzel font-bold text-[#d4af37] border border-[#d4af37]/35 hover:bg-[#d4af37]/10 rounded-lg flex items-center gap-1.5 transition"
+                  title="Duplicate Question"
+                >
+                  <FaCopy className="text-[10px]" /> Duplicate Question
+                </button>
+              </div>
+            </div>
+
+            {/* Question Image Attachment Card (Upload or URL) */}
+            <div className="bg-[#1e0508]/80 border border-[#d4af37]/30 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
+              <div className="flex flex-wrap justify-between items-center gap-2 pb-1 border-b border-[#d4af37]/15">
+                <div className="flex items-center gap-2">
+                  <FaImage className="text-[#d4af37] text-sm" />
+                  <label className="font-cinzel text-xs font-bold text-stone-200 uppercase tracking-wider">
+                    Question Image Attachment
+                  </label>
+                </div>
+                <span className="text-[11px] text-[#e6ca65]/70 font-cormorant italic">
+                  Upload screenshot/image containing question & options
+                </span>
+              </div>
+
+              {activeQuestion.imageUrl ? (
+                <div className="relative rounded-xl border border-[#d4af37]/40 bg-[#120204] p-3 flex flex-col sm:flex-row items-center gap-4">
+                  <div className="max-w-xs w-full max-h-52 rounded-lg overflow-hidden border border-[#d4af37]/30 bg-black/60 flex items-center justify-center">
+                    <img 
+                      src={activeQuestion.imageUrl} 
+                      alt="Question preview" 
+                      className="max-h-48 w-full object-contain"
+                    />
+                  </div>
+                  <div className="flex-1 space-y-2 text-center sm:text-left">
+                    <span className="text-xs text-[#4ade80] font-cinzel font-bold flex items-center justify-center sm:justify-start gap-1">
+                      <FaCheck /> Image Attached Successfully
+                    </span>
+                    <p className="text-[11px] text-[#e6ca65]/70 font-cormorant italic">
+                      Students will see this image in their live exam arena. You can use standard Option A/B/C/D placeholders below!
+                    </p>
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="px-3 py-1.5 bg-[#2e080c] hover:bg-[#3d0b11] text-red-400 border border-red-500/30 rounded-lg text-xs font-cinzel flex items-center gap-1.5 mx-auto sm:mx-0 transition"
+                    >
+                      <FaTimes /> Remove Image
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-2 border-dashed border-[#d4af37]/40 hover:border-[#d4af37] bg-[#140305]/60 hover:bg-[#1a0406] rounded-xl p-5 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2 group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-[#2a070c] border border-[#d4af37]/40 group-hover:border-[#d4af37] flex items-center justify-center text-[#d4af37] transition">
+                      <FaUpload className="text-sm" />
+                    </div>
+                    <div>
+                      <span className="font-cinzel text-xs font-bold text-white block">
+                        Click to Upload Question Image (PNG, JPG, WebP)
+                      </span>
+                      <span className="text-[11px] text-[#e6ca65]/60 font-cormorant italic">
+                        Supports full question screenshots with all 4 options included
+                      </span>
+                    </div>
+                  </div>
+
+                  <input 
+                    type="file" 
+                    ref={fileInputRef}
+                    accept="image/*" 
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+
+                  {/* Or Direct URL Input */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="text-[10px] text-stone-500 font-cinzel uppercase shrink-0">OR URL:</span>
+                    <input 
+                      type="text" 
+                      placeholder="Paste image link: https://..." 
+                      value={activeQuestion.imageUrl}
+                      onChange={(e) => handleActiveQuestionChange("imageUrl", e.target.value)}
+                      className="w-full bg-[#140305] border border-[#d4af37]/25 focus:border-[#d4af37] focus:outline-none px-3 py-1.5 rounded-lg text-xs text-stone-300 font-mono transition"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Question Prompt Input */}
+            <div className="bg-[#1e0508]/80 border border-[#d4af37]/30 rounded-2xl p-4 sm:p-5 shadow-lg space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="block font-cinzel text-xs font-bold text-stone-200 uppercase tracking-wider">
+                  Question Text Prompt {activeQuestion.imageUrl && <span className="text-stone-400 text-[10px] lowercase font-normal">(optional when image attached)</span>}
+                </label>
+              </div>
+              <textarea 
+                rows={2}
+                placeholder={activeQuestion.imageUrl ? "Refer to the image for question and options (optional)" : "e.g. Which of the following is the Vadi swara of Raga Bhupali?"} 
+                value={activeQuestion.questionText}
+                onChange={(e) => handleActiveQuestionChange("questionText", e.target.value)}
+                className="w-full bg-[#140305] border border-[#d4af37]/40 focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] focus:outline-none p-3 rounded-xl text-white text-sm resize-none transition"
+              />
+            </div>
+
+            {/* 4 Options in 2x2 Grid with 1-Click Correct Answer Selection */}
+            <div className="bg-[#1e0508]/80 border border-[#d4af37]/30 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
+              <div className="flex flex-wrap justify-between items-center gap-2 pb-1 border-b border-[#d4af37]/15">
+                <div className="flex items-center gap-2">
+                  <label className="block font-cinzel text-xs font-bold text-stone-200 uppercase tracking-wider">
+                    Multiple Choice Options
+                  </label>
+                  <button
+                    type="button"
+                    onClick={setStandardPlaceholderOptions}
+                    className="px-2.5 py-1 bg-[#2e080c] hover:bg-[#3d0b11] border border-[#d4af37]/40 text-[#f5e6a8] rounded-lg text-[10px] font-cinzel font-bold tracking-wider transition flex items-center gap-1"
+                    title="Reset options to standard Option A, Option B, Option C, Option D"
+                  >
+                    ⚡ Use Default Option A, B, C, D
+                  </button>
+                </div>
+                <span className="text-xs text-[#d4af37] font-sans">
+                  Selected Answer Key: <strong className="text-white font-cinzel ml-1">{activeQuestion.correctAns || "None Selected"}</strong>
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {activeQuestion.options.map((opt, optIdx) => {
+                  const letter = String.fromCharCode(65 + optIdx);
+                  const isCorrect = opt && activeQuestion.correctAns === opt;
+
+                  return (
+                    <div 
+                      key={optIdx} 
+                      className={`relative flex items-center rounded-xl border transition-all ${
+                        isCorrect 
+                          ? "border-[#4ade80] bg-[#0d2818]/80 ring-1 ring-[#4ade80]/60 shadow-[0_0_15px_rgba(74,222,128,0.2)]" 
+                          : "border-[#d4af37]/30 bg-[#140305] hover:border-[#d4af37]/60"
+                      }`}
+                    >
+                      {/* Option letter / Correct toggle button */}
+                      <button
+                        type="button"
+                        onClick={() => setCorrectOption(opt)}
+                        disabled={!opt.trim()}
+                        title="Click to set as correct answer"
+                        className={`ml-2.5 w-8 h-8 rounded-full font-cinzel font-bold text-xs flex items-center justify-center shrink-0 border transition ${
+                          isCorrect
+                            ? "bg-[#4ade80] text-[#0d2818] border-[#4ade80]"
+                            : opt.trim()
+                            ? "bg-[#2e080c] text-[#d4af37] border-[#d4af37]/40 hover:bg-[#d4af37] hover:text-[#160305]"
+                            : "bg-[#1f0508] text-stone-600 border-stone-800 cursor-not-allowed"
+                        }`}
+                      >
+                        {isCorrect ? "✓" : letter}
+                      </button>
+
+                      <input 
+                        type="text" 
+                        placeholder={`Option ${letter}`}
+                        required
+                        value={opt}
+                        onChange={(e) => handleOptionChange(optIdx, e.target.value)}
+                        className="w-full bg-transparent focus:outline-none py-3 pl-3 pr-3 text-white text-sm"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Timer & Quick Setting Controls */}
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-[#1e0508]/80 p-4 rounded-2xl border border-[#d4af37]/30 shadow-lg">
+              <div className="flex items-center gap-3">
+                <span className="font-cinzel text-xs font-bold text-stone-200 uppercase flex items-center gap-1.5">
+                  <FaClock className="text-[#d4af37]" /> Question Timer:
+                </span>
+                <div className="flex items-center gap-1.5">
+                  {[15, 30, 45, 60].map((sec) => (
+                    <button
+                      key={sec}
+                      type="button"
+                      onClick={() => handleActiveQuestionChange("timeLimitSeconds", sec)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-cinzel font-bold transition border ${
+                        activeQuestion.timeLimitSeconds === sec
+                          ? "bg-[#d4af37] text-[#160305] border-[#d4af37]"
+                          : "bg-[#140305] text-[#f5e6a8] border-[#d4af37]/30 hover:border-[#d4af37]"
+                      }`}
+                    >
+                      {sec}s
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={addQuestion}
+                  className="px-4 py-2 bg-[#2e080c] hover:bg-[#3d0b11] border border-[#d4af37]/40 text-[#f5e6a8] rounded-xl text-xs font-cinzel font-bold flex items-center gap-1.5 transition shadow"
+                >
+                  <FaPlus className="text-[9px]" /> Add Next Question
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+

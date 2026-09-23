@@ -45,7 +45,7 @@ export const MusicalNotes = () => {
       {notes.map(note => (
         <div 
           key={note.id} 
-          className="absolute text-amber-100 pointer-events-none transform rotate-12"
+          className="absolute text-[#d4af37] pointer-events-none transform rotate-12"
           style={note.style}
         >
           {note.symbol}

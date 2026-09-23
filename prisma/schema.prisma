@@ -32,6 +32,18 @@ enum PaymentStatus {
   REJECTED
 }
 
+enum LiveQuizStatus {
+  LOBBY
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum LiveParticipantStatus {
+  WAITING
+  ACCEPTED
+  REJECTED
+}
+
 /* =======================
    USER
 ======================= */
@@ -48,6 +60,9 @@ model User {
   enrollments          Enrollment[]
   testAttempts         TestAttempt[]
   paymentRequests      PaymentRequest[]
+  
+  createdLiveQuizzes   LiveQuiz[]
+  liveQuizParticipations LiveQuizParticipant[]
 
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
@@ -262,4 +277,100 @@ model TestAttempt {
   
 
   createdAt DateTime @default(now())
+}
+
+/* =======================
+   LIVE QUIZ
+======================= */
+
+model LiveQuiz {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      LiveQuizStatus @default(LOBBY)
+  joinCode    String?  @unique
+
+  teacherId   String
+  teacher     User     @relation(fields: [teacherId], references: [id])
+  
+  questions   LiveQuizQuestion[]
+  participants LiveQuizParticipant[]
+  sessions    LiveQuizSession[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model LiveQuizSession {
+  id          String   @id @default(cuid())
+  quizId      String
+  quiz        LiveQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  pin         String
+  status      LiveQuizStatus @default(LOBBY)
+
+  participants LiveQuizParticipant[]
+
+  startedAt   DateTime?
+  endedAt     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([quizId])
+}
+
+model LiveQuizQuestion {
+  id              String   @id @default(cuid())
+  quizId          String
+  quiz            LiveQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  
+  questionText    String?
+  imageUrl        String?
+  type            QuestionType  // MCQ or SUBJECTIVE
+  options         String[]      // For MCQ
+  correctAns      String?       // Exact answer or option
+  timeLimitSeconds Int          @default(30)
+  
+  order           Int           @default(0)
+
+  responses       LiveQuizResponse[]
+}
+
+model LiveQuizParticipant {
+  id        String   @id @default(cuid())
+  quizId    String
+  quiz      LiveQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  
+  sessionId String?
+  session   LiveQuizSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name      String
+  
+  status    LiveParticipantStatus @default(WAITING)
+  score     Int      @default(0)
+
+  responses LiveQuizResponse[]
+
+  createdAt DateTime @default(now())
+  
+  @@index([quizId])
+  @@index([sessionId])
+}
+
+model LiveQuizResponse {
+  id             String   @id @default(cuid())
+  participantId  String
+  participant    LiveQuizParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  
+  questionId     String
+  question       LiveQuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  answer         String
+  isCorrect      Boolean  @default(false)
+  timeTaken      Int?
+
+  createdAt      DateTime @default(now())
+  
+  @@unique([participantId, questionId])
 }

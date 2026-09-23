@@ -8,7 +8,7 @@ import { aboutPageMetadata } from "../../data/metaData";
 export const metadata = aboutPageMetadata;
 export default function AboutUs() {
   return (
-    <div className="bg-amber-50 text-[#4A1A1A]">
+    <div className="dark-velvet-bg text-[#f5e6a8] font-sans-modern min-h-screen overflow-x-hidden relative">
       <HeroSection />
       <OurStorySection />
       <VisionMissionSection />
