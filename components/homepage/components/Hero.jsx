@@ -9,10 +9,10 @@ import Link from "next/link";
 const slides = [
   {
     id: 1,
-    badge: "Centuries of Musical Lineage",
-    title: "The Living Heritage of Hindustani Sangeet",
-    subtitle: "From ancient royal darbars and sacred temples to modern academic mastery.",
-    description: "Tamasha Bhawan is an authentic music academy dedicated to rigorous vocal training, raga aesthetics, and Gandharva Mahavidyalaya certified degree programs.",
+    badge: "Top Music Academy in Delhi & Online Sanctuary",
+    title: "The Living Heritage of Hindustani Sangeet in Delhi",
+    subtitle: "Premier music learning in Delhi & online Indian classical vocal training.",
+    description: "Tamasha Bhawan is Delhi's foremost Hindustani classical music academy, dedicated to rigorous vocal training, raga aesthetics, and Gandharva Mahavidyalaya Pune certified degree programs.",
     image: "/images/hero_classical_tanpura.jpg", // Handcrafted Indian Tanpura, Swaralipi manuscripts & Diya in Royal Darbar
     ctaText: "Explore Certified Courses",
     ctaLink: "#courses",
@@ -20,10 +20,10 @@ const slides = [
   },
   {
     id: 2,
-    badge: "Govt. Recognized Certification",
-    title: "Akhil Bhartiya Gandharva Mahavidyalaya Degree",
-    subtitle: "Complete formal examination syllabus from Prarambhik to Visharad.",
-    description: "Structured curriculum, personalized one-on-one riyaz corrections, swara notation sheets, and formal university board exam preparation.",
+    badge: "Gandharva Mahavidyalaya Exam Prep",
+    title: "Akhil Bharatiya Gandharva Mahavidyalaya Degrees",
+    subtitle: "Complete formal examination syllabus from Prarambhik to Visharad in Delhi.",
+    description: "Structured vocal curriculum, personalized 1-on-1 riyaz corrections, swara notation sheets, and formal university board exam preparation in Delhi NCR and worldwide online.",
     image: "/images/hero_classical_sitar_tabla.jpg", // Classical Sitar & Tabla on Silk Carpet in Royal Sabha
     ctaText: "Enroll for Gandharva Exam",
     ctaLink: "#courses",
@@ -31,12 +31,12 @@ const slides = [
   },
   {
     id: 3,
-    badge: "UGC-NET Music Mastery",
-    title: "In-Depth Musicology & Shastra Lectures",
-    subtitle: "Mastering ancient treatises, Gharana lineages, and competitive theory.",
-    description: "Exhaustive guidance on Sangeet Ratnakar, Natyashastra, microtonal Shrutis, and previous year question breakdowns by subject experts.",
+    badge: "UGC NET Music (JRF) Coaching in Delhi",
+    title: "UGC NET Music Preparation & Sangeet Shastra",
+    subtitle: "Mastering ancient treatises, 22 Shrutis, Gharana lineages, and competitive theory.",
+    description: "Exhaustive guidance on Sangeet Ratnakar, Natyashastra, microtonal Shrutis, and UGC NET Music Paper 2 JRF question breakdowns by Delhi's top musicologists.",
     image: "/images/hero_sangeet_shastra.jpg", // Sanskrit Palm-leaf Shastras, Veena & Bansuri in Musicology Study
-    ctaText: "View Course Syllabus",
+    ctaText: "View UGC NET Syllabus",
     ctaLink: "#courses",
     accent: "Academic & Competitive Excellence"
   }

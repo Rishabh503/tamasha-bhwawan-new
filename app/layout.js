@@ -5,31 +5,11 @@ import { Navbar } from "../components/general/NavBar";
 // import { siteConfig ,globalMetadata, organizationSchema} from "@/data/metaData.js";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Footer } from "../components/general/Footer";
-import { globalMetadata, siteConfig } from "../data/metaData";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-
+import { globalMetadata, siteConfig, masterJsonLdSchema } from "../data/metaData";
 import { AuthProvider } from "../context/AuthContext";
 
 export const metadata = {
-  title: {
-    template: `%s | ${siteConfig.siteName}`,
-    default: siteConfig.siteName
-  },
-  description: siteConfig.description,
-  image:{
-    url:"https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png"
-  },
-  ...globalMetadata
+  ...globalMetadata,
 };
 
 export default function RootLayout({ children }) {
@@ -37,6 +17,15 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       <AuthProvider>
         <html lang="en">
+          <head>
+            {/* Master SEO / GEO / AEO Structured JSON-LD Knowledge Graph */}
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(masterJsonLdSchema),
+              }}
+            />
+          </head>
           <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           >
@@ -51,4 +40,5 @@ export default function RootLayout({ children }) {
     </ClerkProvider>
   );
 }
+
 

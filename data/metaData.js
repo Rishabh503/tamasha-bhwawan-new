@@ -1,348 +1,317 @@
-// metadata.js - Centralized metadata configuration
+// metadata.js - Centralized SEO, GEO (Generative Engine Optimization) & AEO (Answer Engine Optimization) configuration
 
 export const siteConfig = {
   siteName: "Tamasha Bhawan",
-  siteUrl: "www.tamashabhawan.com",
+  siteTitle: "Tamasha Bhawan | Premier Indian Classical Music Academy & UGC NET Preparation",
+  siteUrl: "https://www.tamashabhawan.com",
   description:
-    "Premier online Hindustani classical music classes. UGC NET preparation, vocal training affiliated with Gandharva Mahavidyalaya Pune. Best institute in Delhi for Indian classical music education.",
-  keywords:
-    "hindustani classical music, online music classes, ugc net music, gandharva mahavidyalaya, vocal classes, indian classical music, delhi music institute",
-  author: "Tamasha Bhawan",
-  image:
-    "https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png",
+    "Delhi's top Indian classical music academy & online learning sanctuary. Master Hindustani classical vocal, prepare for UGC NET Music (JRF), and earn Gandharva Mahavidyalaya Pune certifications with maestros.",
+  keywords: [
+    "music learning in delhi",
+    "top music academy in delhi",
+    "best music academy delhi",
+    "hindustani classical music classes delhi",
+    "ugc net preparation for music",
+    "ugc net music coaching",
+    "net jrf music syllabus",
+    "gandharva mahavidyalaya exam preparation",
+    "gandharva visharad vocal training",
+    "online classical music learning india",
+    "indian classical vocal classes",
+    "sangeet shastra granthalaya",
+    "raga shastra musicology",
+    "classical music teachers in delhi",
+    "learn khayal gayaki delhi",
+    "classical vocal classes for beginners",
+    "akhil bharatiya gandharva mahavidyalaya mandal",
+    "music net jrf notes"
+  ].join(", "),
+  author: "Tamasha Bhawan Faculty",
+  logo: "https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png",
+  image: "https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png",
+  phone: "+919310395103",
+  email: "contact@tamashabhawan.com",
+  address: {
+    streetAddress: "Sanctuary of Sangeet, Central Delhi",
+    addressLocality: "New Delhi",
+    addressRegion: "Delhi",
+    postalCode: "110001",
+    addressCountry: "IN"
+  },
+  geo: {
+    latitude: "28.6139",
+    longitude: "77.2090"
+  }
 };
 
-// Home Page Metadata
-export const homeMetadata = {
-  title:
-    "Online Hindustani Classical Music Classes | Delhi's #1 Music Institute | UGC NET Preparation",
-  description:
-    "Learn Hindustani classical music online with expert teachers from Gandharva Mahavidyalaya Pune. Best music institute in Delhi offering UGC NET preparation, vocal classes, and light music training. Join students in Dubai and worldwide.",
-  keywords: [
-    "hindustani classical music online classes",
-    "online classes indian hindustani classical music",
-    "delhi number 1 institute hindustani classical music",
-    "best institute hindustani classical music",
-    "hindustani classical music dubai",
-    "ugc net music preparation",
-    "online ugc net music preparation",
-    "vocal classes hindustani classical music",
-    "online vocal classes hindustani classical music",
-    "gandharva mahavidyalaya affiliated vocal classes",
-    "music teacher gandharva maha vishwavidyalaya pune",
-    "hindustani music vocal class",
-    "vocal classes gandhar",
-    "online class hindustani classical music",
-    "ugc net",
-    "csir net",
-    "ugc net login",
-    "ugc net syllabus",
-    "ugc net official website",
-    "ugc net application",
-    "net jrf exam date 2025",
-    "ugc net result 2025",
-    "net jrf eligibility",
-    "net jrf syllabus",
-    "What is NET JRF?",
-    "ugc net music syllabus pdf",
-    "ugc net music book",
-    "ugc net music eligibility",
-    "ugc net music syllabus 2025",
-    "ugc net syllabus",
-    "ugc net music book pdf",
-    "ugc net music notes",
-    "ugc net syllabus paper 1 pdf 2025",
-  ].join(", "),
+// Global metadata defaults
+export const globalMetadata = {
+  metadataBase: new URL(siteConfig.siteUrl),
+  title: {
+    default: "Tamasha Bhawan | Top Music Academy in Delhi & Online Classical Music Learning",
+    template: "%s | Tamasha Bhawan",
+  },
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: [{ name: "Tamasha Bhawan", url: siteConfig.siteUrl }],
+  creator: "Tamasha Bhawan",
+  publisher: "Tamasha Bhawan",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: siteConfig.siteUrl,
+  },
   openGraph: {
-    title:
-      "Online Hindustani Classical Music Classes | Delhi's Premier Music Academy",
-    description:
-      "Master Hindustani classical music with expert guidance. UGC NET preparation, Gandharva Mahavidyalaya affiliated courses, serving students in Delhi, Dubai & worldwide.",
+    type: "website",
+    locale: "en_IN",
+    url: siteConfig.siteUrl,
+    siteName: siteConfig.siteName,
+    title: "Tamasha Bhawan | Best Classical Music Academy in Delhi & UGC NET Music Prep",
+    description: siteConfig.description,
     images: [
       {
-        url: "/images/home-og.jpg",
+        url: "/images/hero_classical_tanpura.jpg",
         width: 1200,
         height: 630,
-        alt: "Hindustani Classical Music Online Classes",
+        alt: "Tamasha Bhawan - Indian Classical Music Academy & Research Sanctuary",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Online Hindustani Classical Music Classes | Delhi's #1 Institute",
-    description:
-      "Learn from expert teachers affiliated with Gandharva Mahavidyalaya Pune. UGC NET prep & vocal training available online.",
+    title: "Tamasha Bhawan | Best Music Academy in Delhi & UGC NET Music",
+    description: siteConfig.description,
+    images: ["/images/hero_classical_tanpura.jpg"],
+  },
+};
+
+// Home Page Metadata
+export const homePageMetadata = {
+  ...globalMetadata,
+  title: "Music Learning in Delhi | Top Music Academy & UGC NET Preparation | Tamasha Bhawan",
+  description:
+    "Ranked among the top music academies in Delhi. Learn Hindustani classical vocal, master Raga Shastra, prepare for UGC NET Music (JRF), and earn Gandharva Mahavidyalaya degrees online & offline.",
+  keywords: [
+    "music learning in delhi",
+    "top music academy in delhi",
+    "best music academy delhi",
+    "hindustani classical music classes delhi",
+    "ugc net preparation for music",
+    "ugc net music coaching delhi",
+    "gandharva mahavidyalaya exam preparation",
+    "gandharva visharad degree classes",
+    "online classical vocal classes delhi",
+    "indian classical music institute delhi",
+    "delhi classical music academy",
+    "learn classical vocal delhi ncr",
+    "music teacher in delhi",
+    "khayal gayaki classes delhi"
+  ].join(", "),
+  alternates: {
+    canonical: siteConfig.siteUrl,
   },
 };
 
 // About Page Metadata
-export const aboutMetadata = {
-  title:
-    "About Us | Tamasha Bhawan | Expert Hindustani Classical Music Teachers",
+export const aboutPageMetadata = {
+  ...globalMetadata,
+  title: "About Us | Top Music Academy in Delhi | Tamasha Bhawan Faculty & Heritage",
   description:
-    "Meet our expert music teachers from Gandharva Maha Vishwavidyalaya Pune. Leading online Hindustani classical music education with UGC NET qualified instructors serving students globally.",
-  keywords: [
-    "music teacher gandharva maha vishwavidyalaya pune",
-    "gandharva mahavidyalaya pune affiliated teachers",
-    "hindustani classical music teachers",
-    "ugc net qualified music teachers",
-    "best music teachers delhi",
-    "online music teachers india",
-    "classical music education experts",
-    "ugc net music syllabus pdf",
-    "ugc net music book",
-    "ugc net music eligibility",
-    "ugc net music syllabus 2025",
-    "ugc net syllabus",
-    "ugc net music book pdf",
-    "ugc net music notes",
-    "ugc net syllabus paper 1 pdf 2025",
-    "ugc net",
-    "csir net",
-    "ugc net login",
-    "ugc net syllabus",
-    "ugc net official website",
-    "ugc net application",
-    "net jrf exam date 2025",
-    "ugc net result 2025",
-    "net jrf eligibility",
-    "net jrf syllabus",
-  ].join(", "),
-  openGraph: {
-    title: "Expert Music Teachers | Tamasha Bhawan",
-    description:
-      "Learn from UGC NET qualified teachers affiliated with Gandharva Maha Vishwavidyalaya Pune. Dedicated to preserving and teaching Indian classical music traditions.",
-    images: [
-      {
-        url: "/images/about-teachers.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Expert Hindustani Classical Music Teachers",
-      },
-    ],
+    "Discover Tamasha Bhawan's lineage in Delhi. Renowned faculty from Gandharva Mahavidyalaya Pune, UGC NET JRF scholars, and maestros dedicated to authentic Guru-Shishya parampara.",
+  alternates: {
+    canonical: `${siteConfig.siteUrl}/about`,
   },
 };
 
 // Courses Page Metadata
-export const coursesMetadata = {
-  title:
-    "Hindustani Classical Music Courses | UGC NET Prep | Vocal Classes | Light Music",
+export const coursesPageMetadata = {
+  ...globalMetadata,
+  title: "Music Courses | UGC NET Music, Gandharva Exams & Classical Vocal Training",
   description:
-    "Comprehensive online courses: Hindustani classical vocal, UGC NET music preparation, Gandharva exam prep, light music classes. Affiliated with Gandharva Mahavidyalaya Pune.",
-  keywords: [
-    "hindustani classical music courses",
-    "ugc net music preparation classes",
-    "classes gandharva exam hindustani classical music vocals",
-    "vocal classes affiliated gandharva mahavidyalaya pune",
-    "vocal classes light music",
-    "online vocal classes light music",
-    "tgt music class",
-    "pgt music",
-    "jrf music class",
-    "music class delhi",
-    "ugc net",
-    "csir net",
-    "ugc net login",
-    "ugc net syllabus",
-    "ugc net official website",
-    "ugc net application",
-    "net jrf exam date 2025",
-    "ugc net result 2025",
-    "net jrf eligibility",
-    "net jrf syllabus",
-    "music classes online",
-    "ugc net",
-    "csir net",
-    "ugc net login",
-    "ugc net syllabus",
-    "ugc net official website",
-    "ugc net application",
-    "net jrf exam date 2025",
-    "ugc net result 2025",
-    "net jrf eligibility",
-    "net jrf syllabus",
-    "What is NET JRF?",
-  ].join(", "),
-  openGraph: {
-    title:
-      "Complete Hindustani Music Courses | UGC NET & Classical Vocal Training",
-    description:
-      "Master classical music with our structured courses. UGC NET preparation, Gandharva exam training, and light music classes available online.",
-    images: [
-      {
-        url: "/images/courses-overview.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Hindustani Classical Music Courses",
-      },
-    ],
-  },
-};
-
-// Contact Page Metadata
-export const contactMetadata = {
-  title:
-    "Contact Tamasha Bhawan | Enroll in Online Hindustani Classical Music Classes",
-  description:
-    "Join Delhi's premier music institute for online Hindustani classical music classes. Contact us for UGC NET preparation, vocal training, and Gandharva Mahavidyalaya affiliated courses.",
-  keywords: [
-    "contact hindustani music classes",
-    "enroll online music classes delhi",
-    "Tamasha Bhawan contact",
-    "hindustani classical music admission",
-    "online music classes registration",
-    "music institute delhi contact",
-    "ugc net music classes enrollment",
-  ].join(", "),
-  openGraph: {
-    title: "Contact Us | Tamasha Bhawan Delhi",
-    description:
-      "Ready to begin your musical journey? Contact Delhi's top music institute for online Hindustani classical music classes and UGC NET preparation.",
-    images: [
-      {
-        url: "/images/contact-us.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Contact Tamasha Bhawan",
-      },
-    ],
-  },
-};
-
-// UGC NET Specific Page Metadata (if you have a dedicated page)
-export const ugcNetMetadata = {
-  title:
-    "UGC NET Music Preparation Online | Best Coaching in Delhi | Gandharva Academy",
-  description:
-    "Ace UGC NET Music exam with our expert online coaching. Comprehensive preparation for TGT, PGT, and JRF music exams by experienced teachers from Gandharva Mahavidyalaya.",
-  keywords: [
-    "ugc net music preparation",
-    "online ugc net music preparation",
-    "ugc net music coaching delhi",
-    "tgt music class",
-    "pgt music preparation",
-    "jrf music class",
-    "ugc net music online classes",
-    "best ugc net music coaching",
-  ].join(", "),
-  openGraph: {
-    title: "UGC NET Music Preparation | Online Coaching by Experts",
-    description:
-      "Comprehensive UGC NET Music preparation with high success rate. Expert guidance for TGT, PGT, and JRF music examinations.",
-    images: [
-      {
-        url: "/images/ugc-net-prep.jpg",
-        width: 1200,
-        height: 630,
-        alt: "UGC NET Music Preparation Classes",
-      },
-    ],
-  },
-};
-
-// Schema.org JSON-LD structured data
-export const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  name: "Tamasha Bhawan",
-  description:
-    "Premier online institute for Hindustani classical music education and UGC NET preparation",
-  url: "www.tamashabhawan.com",
-  logo: "https://yourwebsite.com/logo.png",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Delhi",
-    addressCountry: "India",
-  },
-  contactPoint: {
-    "@type": "ContactPoint",
-    telephone: "+91-XXXXXXXXXX",
-    contactType: "customer service",
-  },
-  sameAs: [
-    "https://facebook.com/yourpage",
-    "https://instagram.com/yourpage",
-    "https://youtube.com/yourchannel",
-  ],
-};
-
-export const courseSchema = {
-  "@context": "https://schema.org",
-  "@type": "Course",
-  name: "Online Hindustani Classical Music Classes",
-  description:
-    "Comprehensive online course for learning Hindustani classical music with expert teachers",
-  provider: {
-    "@type": "Organization",
-    name: "Tamasha Bhawan",
-  },
-  courseMode: "online",
-  educationalLevel: "All Levels",
-  teaches: [
-    "Hindustani Classical Music",
-    "Vocal Training",
-    "Music Theory",
-    "UGC NET Preparation",
-  ],
-};
-
-// Global metadata for all pages
-export const globalMetadata = {
-  robots: "index, follow",
-  googlebot: "index, follow",
-  viewport: "width=device-width, initial-scale=1",
-  charset: "utf-8",
-  language: "en-IN",
+    "Explore structured courses in Hindustani Classical Vocal, UGC NET Music Paper 2 JRF, Gandharva Prarambhik to Visharad exam preparations, and voice culture masterclasses in Delhi.",
   alternates: {
-    canonical: siteConfig.siteUrl,
-  },
-  image:{
-    url:"https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png"
-  },
- 
-};
-
-// Example implementation for Next.js pages
-
-// For app/page.js (Home)
-export const homePageMetadata = {
-  ...globalMetadata,
-  title: homeMetadata.title,
-  description: homeMetadata.description,
-  keywords: homeMetadata.keywords,
-  openGraph: {
-    ...homeMetadata.openGraph,
-    url: siteConfig.siteUrl,
-    siteName: siteConfig.siteName,
-    type: "website",
-  },
-  twitter: homeMetadata.twitter,
-};
-
-// For app/about/page.js
-export const aboutPageMetadata = {
-  ...globalMetadata,
-  title: aboutMetadata.title,
-  description: aboutMetadata.description,
-  keywords: aboutMetadata.keywords,
-  openGraph: {
-    ...aboutMetadata.openGraph,
-    url: `${siteConfig.siteUrl}/about`,
-    siteName: siteConfig.siteName,
-    type: "website",
+    canonical: `${siteConfig.siteUrl}/courses`,
   },
 };
 
-// For app/contact/page.js
-export const contactPageMetadata = {
+// Articles Page Metadata
+export const articlesPageMetadata = {
   ...globalMetadata,
-  title: contactMetadata.title,
-  description: contactMetadata.description,
-  keywords: contactMetadata.keywords,
-  openGraph: {
-    ...contactMetadata.openGraph,
-    url: `${siteConfig.siteUrl}/contact`,
-    siteName: siteConfig.siteName,
-    type: "website",
+  title: "Sangeet Shastra Granthalaya | Musicology Treatises & Raga Shastra Articles",
+  description:
+    "Read in-depth Hindustani musicology treatises, microtonal 22 Shruti breakdowns, Sangeet Ratnakar dissertations, and audio commentaries by senior maestros at Tamasha Bhawan.",
+  alternates: {
+    canonical: `${siteConfig.siteUrl}/articles`,
   },
+};
+
+// Live Quiz Page Metadata
+export const liveQuizPageMetadata = {
+  ...globalMetadata,
+  title: "Live Sangeet Quiz Arena | UGC NET & Gandharva Exam Practice Tests",
+  description:
+    "Compete live with music scholars across India. Real-time gamified quizzes on Raga Lakshanas, Taals, Gharana Lineages, and UGC NET Musicology exam questions.",
+  alternates: {
+    canonical: `${siteConfig.siteUrl}/live-quiz/join`,
+  },
+};
+
+// GEO / AEO Structured Data Knowledge Graph (JSON-LD)
+export const masterJsonLdSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["MusicSchool", "EducationalOrganization", "LocalBusiness"],
+      "@id": `${siteConfig.siteUrl}/#organization`,
+      name: "Tamasha Bhawan",
+      alternateName: "Tamasha Bhawan Sanctuary of Sangeet",
+      url: siteConfig.siteUrl,
+      logo: siteConfig.logo,
+      image: siteConfig.image,
+      description: siteConfig.description,
+      telephone: siteConfig.phone,
+      email: siteConfig.email,
+      priceRange: "₹₹",
+      currenciesAccepted: "INR, USD, AED",
+      paymentAccepted: "Credit Card, Debit Card, UPI, Net Banking",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: siteConfig.address.streetAddress,
+        addressLocality: siteConfig.address.addressLocality,
+        addressRegion: siteConfig.address.addressRegion,
+        postalCode: siteConfig.address.postalCode,
+        addressCountry: siteConfig.address.addressCountry,
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: siteConfig.geo.latitude,
+        longitude: siteConfig.geo.longitude,
+      },
+      areaServed: [
+        { "@type": "City", name: "Delhi" },
+        { "@type": "City", name: "New Delhi" },
+        { "@type": "City", name: "Noida" },
+        { "@type": "City", name: "Gurgaon" },
+        { "@type": "Country", name: "India" },
+        { "@type": "Country", name: "United Arab Emirates" },
+        { "@type": "AdministrativeArea", name: "Worldwide Online" }
+      ],
+      knowsAbout: [
+        "Hindustani Classical Music",
+        "Indian Classical Vocal",
+        "UGC NET Music Examination",
+        "UGC NET JRF Musicology",
+        "Akhil Bharatiya Gandharva Mahavidyalaya Mandal Pune",
+        "Gandharva Visharad & Alankar",
+        "Raga Shastra & 22 Shrutis",
+        "Sangeet Ratnakar by Sarangadeva",
+        "Bhatkhande Swaralipi Notation System",
+        "Gwalior Gharana Khayal Gayaki",
+        "Voice Culture & Riyaz Techniques"
+      ],
+      sameAs: [
+        "https://www.youtube.com/@tamashabhawan",
+        "https://www.instagram.com/tamashabhawan",
+        "https://wa.me/919310395103"
+      ],
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Classical Music Training & Certification Programs",
+        itemListElement: [
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Course",
+              name: "UGC NET Music (JRF / Assistant Professor) Comprehensive Coaching",
+              description: "Complete analytical coverage of UGC NET Music syllabus, ancient treatises, theoretical papers, and live test series in Delhi.",
+              provider: { "@type": "Organization", name: "Tamasha Bhawan" }
+            }
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Course",
+              name: "Gandharva Mahavidyalaya Pune Examination Preparation",
+              description: "Structured vocal curriculum for Prarambhik, Praveshika, Madhyama, and Visharad examinations with practical riyaz & notation sheets.",
+              provider: { "@type": "Organization", name: "Tamasha Bhawan" }
+            }
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Course",
+              name: "Hindustani Classical Vocal Foundations & Khayal Gayaki",
+              description: "Authentic Guru-Shishya training in Swara Sadhana, Bandish rendition, Tala mastery, and Raga improvisation in Delhi.",
+              provider: { "@type": "Organization", name: "Tamasha Bhawan" }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteConfig.siteUrl}/#website`,
+      url: siteConfig.siteUrl,
+      name: "Tamasha Bhawan",
+      description: siteConfig.description,
+      publisher: {
+        "@id": `${siteConfig.siteUrl}/#organization`
+      },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${siteConfig.siteUrl}/articles?search={search_term_string}`
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": `${siteConfig.siteUrl}/#faq`,
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Which is the top music academy in Delhi for Indian Classical Music?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Tamasha Bhawan is recognized as one of the top music academies in Delhi for Hindustani Classical Music, offering authentic vocal training, microtonal Shruti study, and recognized diploma and degree coaching affiliated with Gandharva Mahavidyalaya."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "How can I prepare for the UGC NET Music exam with Tamasha Bhawan?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Tamasha Bhawan offers specialized UGC NET Music coaching covering ancient Sangeet Shastras (Natya Shastra, Sangeet Ratnakar, Brihaddeshi), Raga classifications, Tala theory, Gharana lineages, live mock quizzes, and previous years' question papers."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Are courses affiliated with Akhil Bharatiya Gandharva Mahavidyalaya Mandal?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes, our curriculum prepares students systematically for official Gandharva Mahavidyalaya Pune examinations from Prarambhik, Praveshika, Madhyama, to Visharad and Alankar degrees."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Can beginners in Delhi or outside join online classical music classes?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes, Tamasha Bhawan provides both online and offline classical vocal training designed for beginners as well as advanced scholars, featuring 1-on-1 feedback, notation sheets, and interactive riyaz sessions."
+          }
+        }
+      ]
+    }
+  ]
 };

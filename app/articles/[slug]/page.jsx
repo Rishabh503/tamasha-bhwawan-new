@@ -111,8 +111,43 @@ export default function ArticleReaderPage({ params }) {
   const { article, related = [] } = data;
   const headings = extractHeadings(article.content);
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.excerpt || article.title,
+    image: article.coverImage || "https://www.tamashabhawan.com/images/hero_classical_tanpura.jpg",
+    datePublished: article.createdAt,
+    dateModified: article.updatedAt || article.createdAt,
+    author: {
+      "@type": "Person",
+      name: article.authorName || "Tamasha Bhawan Faculty",
+      jobTitle: article.authorRole || "Musicologist",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Tamasha Bhawan",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://res.cloudinary.com/dhe9p6bo0/image/upload/v1745699335/WhatsApp_Image_2025-04-27_at_01.46.00_31d81b70-removebg-preview_riv0f9.png",
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://www.tamashabhawan.com/articles/${article.slug}`,
+    },
+    articleSection: article.category || "Musicology",
+    keywords: (article.tags || []).join(", "),
+  };
+
   return (
     <div className="min-h-screen dark-velvet-bg text-[#f5e6a8] font-sans-modern pt-14 sm:pt-16 pb-16 relative">
+      {/* Dynamic Article JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+
       {/* Scroll Progress Bar at very top */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-[#140305] z-50">
         <div 

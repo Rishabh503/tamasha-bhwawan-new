@@ -1,12 +1,11 @@
-// import HomePage from '..components/homepage/HomePage'
-// import { homePageMetadata } from '@/data/metaData';
-import HomePage from '../components/homepage/HomePage'
-import React from 'react'
-// export const metadata = homePageMetadata;
-const page = () => {
-  return (
-    <HomePage/>
-  )
-}
+import HomePage from '../components/homepage/HomePage';
+import React from 'react';
+import { homePageMetadata } from '../data/metaData';
 
-export default page
+export const metadata = homePageMetadata;
+
+const page = () => {
+  return <HomePage />;
+};
+
+export default page;
