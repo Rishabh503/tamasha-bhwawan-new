@@ -1,33 +1,15 @@
 "use client";
 
-import { UserButton, useUser } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LuMusic2 } from "react-icons/lu";
+import { useAuth } from "../../context/AuthContext";
 
 export const Navbar = () => {
-  const { user, isSignedIn } = useUser();
-  const [role, setRole] = useState("USER");
-  const [loading, setLoading] = useState(false);
+  const { isSignedIn, isAdmin } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/user/profile");
-        const data = await res.json();
-        setRole(data?.data?.role || null);
-      } catch (err) {
-        setRole(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  const isAdmin = role === "ADMIN";
 
   return (
     <>

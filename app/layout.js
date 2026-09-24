@@ -18,6 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 
+import { AuthProvider } from "../context/AuthContext";
+
 export const metadata = {
   title: {
     template: `%s | ${siteConfig.siteName}`,
@@ -33,20 +35,20 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-        <Navbar/>
-        <div className="pt-[68px]">
-        {children}
-
-        </div>
-
-        <Footer/>
-      </body>
-    </html>
-        </ClerkProvider>
+      <AuthProvider>
+        <html lang="en">
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            <Navbar/>
+            <div className="pt-[68px]">
+              {children}
+            </div>
+            <Footer/>
+          </body>
+        </html>
+      </AuthProvider>
+    </ClerkProvider>
   );
 }
+
