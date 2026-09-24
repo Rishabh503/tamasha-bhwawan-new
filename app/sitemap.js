@@ -1,6 +1,8 @@
 import prisma from "./lib/prisma";
 import { siteConfig } from "../data/metaData";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap() {
   const baseUrl = siteConfig.siteUrl;
 

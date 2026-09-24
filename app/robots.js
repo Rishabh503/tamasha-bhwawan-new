@@ -1,5 +1,7 @@
 import { siteConfig } from "../data/metaData";
 
+export const dynamic = "force-dynamic";
+
 export default function robots() {
   const baseUrl = siteConfig.siteUrl;
 
