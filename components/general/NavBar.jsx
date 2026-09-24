@@ -64,6 +64,7 @@ export const Navbar = () => {
             <>
               <Link href="/about" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">About</Link>
               <Link href="/courses" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Courses</Link>
+              <Link href="/articles" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Articles</Link>
               <Link href="/#videos" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Masterclasses</Link>
               <Link href="/#chronicle" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">Chronicle</Link>
               {isSignedIn && (
@@ -82,6 +83,9 @@ export const Navbar = () => {
             <>
               <Link href="/admin/dashboard" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">
                 Dashboard
+              </Link>
+              <Link href="/admin/articles" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">
+                Articles
               </Link>
               <Link href="/admin/payments" className="text-stone-300 hover:text-[#f5e6a8] transition-colors">
                 Payments
@@ -138,6 +142,7 @@ export const Navbar = () => {
             <>
               <Link href="/about" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">About</Link>
               <Link href="/courses" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Courses</Link>
+              <Link href="/articles" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Articles Granthalaya</Link>
               <Link href="/#videos" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Masterclasses</Link>
               <Link href="/#chronicle" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Sangeet Chronicle</Link>
               {isSignedIn && (
@@ -156,6 +161,7 @@ export const Navbar = () => {
           {isAdmin && (
             <>
               <Link href="/admin/dashboard" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Dashboard</Link>
+              <Link href="/admin/articles" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Articles Granthalaya</Link>
               <Link href="/admin/payments" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Payments</Link>
               <Link href="/admin/users" onClick={() => setIsOpen(false)} className="text-stone-200 hover:text-[#f5e6a8]">Users</Link>
               <Link href="/admin/live-quiz" onClick={() => setIsOpen(false)} className="text-[#f5e6a8] font-bold">Live Quiz Platform</Link>

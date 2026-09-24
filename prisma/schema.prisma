@@ -374,3 +374,36 @@ model LiveQuizResponse {
   
   @@unique([participantId, questionId])
 }
+
+/* =======================
+   ARTICLE & READING PLATFORM
+======================= */
+
+model Article {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  excerpt         String?
+  content         String    // Rich text / markdown / HTML format
+  coverImage      String?   // Featured hero image
+  audioUrl        String?   // Embedded audio lecture / recitation / raga track
+  audioDuration   Int?      // Duration in seconds
+  category        String    @default("Musicology") // "Raga Shastra", "Gharana Parampara", "Voice Culture", "History & Lineage", "Ancient Treatises"
+  tags            String[]  @default([])
+  readingTimeMin  Int       @default(5)
+  isPublished     Boolean   @default(true)
+  views           Int       @default(0)
+
+  // Author information
+  authorName      String    @default("Tamasha Bhawan Faculty")
+  authorAvatar    String?
+  authorRole      String?   @default("Maestro & Musicologist")
+  authorBio       String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([category])
+}
