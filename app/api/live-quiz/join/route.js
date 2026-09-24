@@ -6,15 +6,19 @@ import { pusherServer } from "../../../lib/pusher";
 export async function POST(req) {
   try {
     const { userId } = await auth();
+    if (!userId) {
+      return new NextResponse("Unauthorized. You must be logged in to participate in quizzes.", { status: 401 });
+    }
+
     const body = await req.json();
     const { quizId, name } = body;
 
     if (!name?.trim()) return new NextResponse("Name is required", { status: 400 });
 
     let dbUserId = null;
-    if (userId) {
-      const user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
-      if (user) dbUserId = user.id;
+    const user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
+    if (user) {
+      dbUserId = user.id;
     }
 
     // Find the latest active session for this quiz if available

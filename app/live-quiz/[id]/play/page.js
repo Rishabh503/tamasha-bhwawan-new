@@ -3,9 +3,12 @@
 import { useEffect, useState, use } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getPusherClient } from "../../../lib/pusher";
+import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function PlayQuiz({ params }) {
   const router = useRouter();
+  const { isLoaded, isSignedIn } = useUser();
   const searchParams = useSearchParams();
   const { id: quizId } = use(params);
   const participantId = searchParams.get("participantId");
@@ -78,6 +81,45 @@ export default function PlayQuiz({ params }) {
       setIsSubmitting(false);
     }
   };
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center dark-velvet-bg">
+        <div className="w-12 h-12 border-2 border-[#d4af37] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center dark-velvet-bg font-sans-modern p-4 relative overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#d4af37]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="w-full max-w-md bg-[#1e0508]/90 border border-[#d4af37]/35 rounded-3xl shadow-2xl p-8 text-center backdrop-blur-md relative z-10">
+          <div className="w-16 h-16 rounded-2xl bg-[#2a070c] border border-[#d4af37]/40 flex items-center justify-center text-3xl mx-auto mb-5 text-[#d4af37] shadow-[0_0_20px_rgba(212,175,55,0.25)]">
+            🔐
+          </div>
+
+          <span className="text-[11px] uppercase tracking-[0.25em] text-[#d4af37] font-cinzel font-semibold block mb-1">
+            Authentication Required
+          </span>
+          <h1 className="text-2xl font-cinzel font-bold text-white tracking-wide">
+            Student Login Required
+          </h1>
+          <p className="text-xs text-[#e6ca65]/80 font-cormorant italic mt-2 mb-6">
+            You must be logged in to participate in the live quiz arena.
+          </p>
+
+          <Link
+            href={`/sign-in?redirect_url=/live-quiz/${quizId}/play`}
+            className="block w-full py-3.5 bg-gradient-to-r from-[#d4af37] via-[#f3e5ab] to-[#aa7c11] text-[#160305] rounded-2xl font-cinzel font-bold text-xs tracking-wider uppercase hover:shadow-[0_0_20px_rgba(212,175,55,0.45)] transition text-center"
+          >
+            Log In Now →
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!question) {
     return (

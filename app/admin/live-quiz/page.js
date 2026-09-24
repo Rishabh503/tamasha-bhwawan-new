@@ -3,7 +3,17 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaPlus, FaPlay, FaHistory, FaAward, FaBookOpen } from "react-icons/fa";
+import { 
+  FaPlus, 
+  FaPlay, 
+  FaHistory, 
+  FaAward, 
+  FaBookOpen, 
+  FaEye, 
+  FaEdit, 
+  FaTrash,
+  FaChartBar
+} from "react-icons/fa";
 import { GiMusicalNotes, GiScrollUnfurled } from "react-icons/gi";
 
 export default function AdminLiveQuizzes() {
@@ -13,6 +23,8 @@ export default function AdminLiveQuizzes() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
+  const [quizToDelete, setQuizToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchQuizzesAndSessions();
@@ -63,6 +75,28 @@ export default function AdminLiveQuizzes() {
     }
   };
 
+  const handleDeleteQuiz = async () => {
+    if (!quizToDelete) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/live-quiz/${quizToDelete.id}`, {
+        method: "DELETE"
+      });
+      if (res.ok) {
+        setQuizzes((prev) => prev.filter((q) => q.id !== quizToDelete.id));
+        setQuizToDelete(null);
+      } else {
+        const errorText = await res.text();
+        alert(`Failed to delete quiz: ${errorText}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting quiz.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen dark-velvet-bg text-white p-4 sm:p-8 font-sans-modern">
       <div className="max-w-6xl mx-auto">
@@ -77,7 +111,7 @@ export default function AdminLiveQuizzes() {
               Live Quiz Management
             </h1>
             <p className="font-cormorant text-base sm:text-lg text-[#f0e6d2]/80 mt-0.5">
-              Author question templates, host real-time classroom sessions, and inspect historical performance.
+              Author question templates, inspect, edit, host real-time classroom sessions, and analyze performance.
             </p>
           </div>
 
@@ -150,7 +184,7 @@ export default function AdminLiveQuizzes() {
                       </span>
                     </div>
 
-                    <p className="font-cormorant text-sm text-[#f0e6d2]/70 mb-4">
+                    <p className="font-cormorant text-sm text-[#f0e6d2]/70 mb-3">
                       {quiz._count?.questions || 0} Questions Total
                     </p>
 
@@ -161,21 +195,52 @@ export default function AdminLiveQuizzes() {
                     )}
                   </div>
                   
+                  {/* Action Controls for Quiz */}
                   <div className="space-y-2.5 mt-4 pt-4 border-t border-[#d4af37]/20">
+                    {/* Primary Host Button */}
                     <button
                       onClick={() => handleHostNewSession(quiz.id)}
                       disabled={actionLoading === quiz.id}
-                      className="w-full py-3 rounded-xl gold-gradient-bg text-[#1a0406] font-cinzel font-bold text-xs uppercase tracking-wider hover:scale-[1.02] transition shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full py-2.5 rounded-xl gold-gradient-bg text-[#1a0406] font-cinzel font-bold text-xs uppercase tracking-wider hover:scale-[1.02] transition shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       <FaPlay className="text-xs" />
                       {actionLoading === quiz.id ? "Preparing..." : "▶ Host Live Session"}
                     </button>
-                    <Link
-                      href={`/admin/live-quiz/${quiz.id}/report`}
-                      className="block text-center w-full py-2 bg-[#2e080c] hover:bg-[#3d0b11] border border-[#d4af37]/30 text-[#f5e6a8] rounded-xl font-cinzel text-xs font-semibold tracking-wider transition"
-                    >
-                      View Report & Analytics →
-                    </Link>
+
+                    {/* Preview & Edit Action Row */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link
+                        href={`/admin/live-quiz/${quiz.id}/preview`}
+                        className="py-2 px-3 text-center bg-[#2e080c] hover:bg-[#3d0b11] border border-[#d4af37]/40 text-[#f5e6a8] rounded-xl font-cinzel text-xs font-bold tracking-wider transition flex items-center justify-center gap-1.5"
+                      >
+                        <FaEye className="text-[11px]" /> Preview
+                      </Link>
+
+                      <Link
+                        href={`/admin/live-quiz/${quiz.id}/edit`}
+                        className="py-2 px-3 text-center bg-[#2e080c] hover:bg-[#3d0b11] border border-[#d4af37]/40 text-[#f5e6a8] rounded-xl font-cinzel text-xs font-bold tracking-wider transition flex items-center justify-center gap-1.5"
+                      >
+                        <FaEdit className="text-[11px]" /> Edit
+                      </Link>
+                    </div>
+
+                    {/* Report & Delete Action Row */}
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/admin/live-quiz/${quiz.id}/report`}
+                        className="flex-1 py-2 text-center bg-[#1a0406] hover:bg-[#25060a] border border-[#d4af37]/25 text-[#f0e6d2]/80 hover:text-white rounded-xl font-cinzel text-xs font-medium tracking-wider transition flex items-center justify-center gap-1.5"
+                      >
+                        <FaChartBar className="text-[10px]" /> Reports
+                      </Link>
+
+                      <button
+                        onClick={() => setQuizToDelete(quiz)}
+                        className="py-2 px-3 bg-[#240609] hover:bg-red-950/60 text-stone-400 hover:text-red-300 border border-red-500/30 rounded-xl text-xs font-cinzel transition flex items-center justify-center gap-1"
+                        title="Delete Quiz Template"
+                      >
+                        <FaTrash className="text-[10px]" /> Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -253,6 +318,40 @@ export default function AdminLiveQuizzes() {
         )}
 
       </div>
+
+      {/* Delete Quiz Confirmation Modal */}
+      {quizToDelete && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#200508] border-2 border-red-500/50 rounded-2xl max-w-md w-full p-6 shadow-2xl text-center space-y-4">
+            <div className="w-12 h-12 rounded-full bg-red-900/40 border border-red-500/50 flex items-center justify-center text-red-400 mx-auto">
+              <FaTrash className="text-lg" />
+            </div>
+            <h3 className="font-cinzel text-lg font-bold text-white">
+              Delete Quiz Template?
+            </h3>
+            <p className="font-cormorant text-stone-300 text-sm">
+              Are you sure you want to permanently delete <strong className="text-white font-cinzel">&ldquo;{quizToDelete.title}&rdquo;</strong> and all of its question sets? This action cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-center pt-2">
+              <button
+                type="button"
+                onClick={() => setQuizToDelete(null)}
+                className="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl font-cinzel text-xs font-bold transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteQuiz}
+                disabled={deleting}
+                className="px-5 py-2 bg-red-700 hover:bg-red-600 text-white rounded-xl font-cinzel text-xs font-bold transition shadow-lg disabled:opacity-50"
+              >
+                {deleting ? "Deleting..." : "Yes, Delete Quiz"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

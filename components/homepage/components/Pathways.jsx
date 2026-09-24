@@ -14,7 +14,7 @@ const Pathways = () => {
       title: "Learn Indian Classical Vocal Music",
       subtitle: "Official Syllabus of Akhil Bhartiya Gandharva Mahavidyalaya (Pune)",
       desc: "A rigorous and divine journey through the foundational pillars of Hindustani Classical Vocal. Designed for scholars seeking formal certification, university preparation, and profound swara mastery.",
-      image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1200",
+      image: "/images/hero_classical_sitar_tabla.jpg",
       features: [
         "Complete preparation for Gandharva Mahavidyalaya exams",
         "Deep exploration of Ragas: Yaman, Bhairav, Jaunpuri, Bageshri & more",
@@ -33,7 +33,7 @@ const Pathways = () => {
       title: "Learn Hindustani Light Classical & Bhava",
       subtitle: "Mastering Thumri, Dadra, Ghazal, and Voice Placement",
       desc: "Unlock the expressive soul of your singing voice. Learn how to blend classical pitch accuracy with emotive aesthetics, microtonal meends, and soul-stirring semi-classical genres.",
-      image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1200",
+      image: "/images/hero_sangeet_shastra.jpg",
       features: [
         "Voice Culture: Breath control, octave range expansion, and resonance",
         "Techniques of Thumri, Dadra, Bhajans & Ghazal phrasing",

@@ -3,12 +3,67 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
 export default function GamePinEntryPage() {
   const router = useRouter();
+  const { isLoaded, isSignedIn } = useUser();
   const [pin, setPin] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  if (!isLoaded) {
+    return (
+      <div className="flex min-h-screen items-center justify-center dark-velvet-bg">
+        <div className="w-12 h-12 border-2 border-[#d4af37] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="flex min-h-screen items-center justify-center dark-velvet-bg font-sans-modern p-4 relative overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#d4af37]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="w-full max-w-md bg-[#1e0508]/90 border border-[#d4af37]/35 rounded-3xl shadow-2xl p-8 text-center backdrop-blur-md relative z-10">
+          <div className="w-16 h-16 rounded-2xl bg-[#2a070c] border border-[#d4af37]/40 flex items-center justify-center text-3xl mx-auto mb-5 text-[#d4af37] shadow-[0_0_20px_rgba(212,175,55,0.25)]">
+            🔐
+          </div>
+
+          <span className="text-[11px] uppercase tracking-[0.25em] text-[#d4af37] font-cinzel font-semibold block mb-1">
+            Authentication Required
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-cinzel font-bold text-white tracking-wide">
+            Student Login Required
+          </h1>
+          <p className="text-xs sm:text-sm text-[#e6ca65]/80 font-cormorant italic mt-2 mb-6">
+            You must be logged in to your Tamasha Bhawan account to participate in live quizzes and enter the Sangeet Sabha arena.
+          </p>
+
+          <div className="space-y-3">
+            <Link
+              href="/sign-in?redirect_url=/live-quiz/join"
+              className="block w-full py-4 bg-gradient-to-r from-[#d4af37] via-[#f3e5ab] to-[#aa7c11] text-[#160305] rounded-2xl font-cinzel font-bold text-sm tracking-wider uppercase hover:shadow-[0_0_20px_rgba(212,175,55,0.45)] transition text-center"
+            >
+              Log In to Continue →
+            </Link>
+            <Link
+              href="/sign-up?redirect_url=/live-quiz/join"
+              className="block w-full py-3 bg-[#240609] border border-[#d4af37]/40 text-[#f5e6a8] rounded-2xl font-cinzel font-semibold text-xs tracking-wider uppercase hover:border-[#d4af37] transition text-center"
+            >
+              Create Account
+            </Link>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-[#d4af37]/20 text-xs">
+            <Link href="/" className="text-[#e6ca65]/70 hover:text-[#d4af37] font-cinzel tracking-wider transition">
+              ← Return to Tamasha Bhawan
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

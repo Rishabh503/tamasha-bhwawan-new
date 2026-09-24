@@ -24,8 +24,8 @@ const About = () => {
             <div className="relative rounded-3xl overflow-hidden shadow-2xl p-2.5 bg-gradient-to-br from-[#d4af37] via-[#f5e6a8] to-[#8c5916]">
               <div className="rounded-2xl overflow-hidden border border-[#2e080c] relative aspect-[4/5] bg-black">
                 <img
-                  src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1200"
-                  alt="Classical Indian Vocal Riyaz & Music Heritage"
+                  src="/images/hero_classical_tanpura.jpg"
+                  alt="Authentic Indian Classical Tanpura Riyaz & Sangeet Sadhana"
                   className="w-full h-full object-cover filter contrast-105 hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1a0406]/85 via-transparent to-transparent"></div>

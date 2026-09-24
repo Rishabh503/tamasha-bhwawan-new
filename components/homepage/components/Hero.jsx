@@ -13,7 +13,7 @@ const slides = [
     title: "The Living Heritage of Hindustani Sangeet",
     subtitle: "From ancient royal darbars and sacred temples to modern academic mastery.",
     description: "Tamasha Bhawan is an authentic music academy dedicated to rigorous vocal training, raga aesthetics, and Gandharva Mahavidyalaya certified degree programs.",
-    image: "https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1800", // Royal Indian architectural palace arches
+    image: "/images/hero_classical_tanpura.jpg", // Handcrafted Indian Tanpura, Swaralipi manuscripts & Diya in Royal Darbar
     ctaText: "Explore Certified Courses",
     ctaLink: "#courses",
     accent: "Heritage & Guru-Shishya Parampara"
@@ -24,7 +24,7 @@ const slides = [
     title: "Akhil Bhartiya Gandharva Mahavidyalaya Degree",
     subtitle: "Complete formal examination syllabus from Prarambhik to Visharad.",
     description: "Structured curriculum, personalized one-on-one riyaz corrections, swara notation sheets, and formal university board exam preparation.",
-    image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1800", // Authentic acoustic riyaz instruments setup
+    image: "/images/hero_classical_sitar_tabla.jpg", // Classical Sitar & Tabla on Silk Carpet in Royal Sabha
     ctaText: "Enroll for Gandharva Exam",
     ctaLink: "#courses",
     accent: "Affiliated Degree Preparation"
@@ -35,7 +35,7 @@ const slides = [
     title: "In-Depth Musicology & Shastra Lectures",
     subtitle: "Mastering ancient treatises, Gharana lineages, and competitive theory.",
     description: "Exhaustive guidance on Sangeet Ratnakar, Natyashastra, microtonal Shrutis, and previous year question breakdowns by subject experts.",
-    image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1800", // Vocalist in riyaz performance
+    image: "/images/hero_sangeet_shastra.jpg", // Sanskrit Palm-leaf Shastras, Veena & Bansuri in Musicology Study
     ctaText: "View Course Syllabus",
     ctaLink: "#courses",
     accent: "Academic & Competitive Excellence"
@@ -83,20 +83,20 @@ const Hero = () => {
           <img
             src={currentSlide.image}
             alt={currentSlide.title}
-            className="w-full h-full object-cover object-center filter brightness-[0.38] contrast-110"
+            className="w-full h-full object-cover object-center filter brightness-[0.72] contrast-105"
           />
-          {/* Deep Victorian Vignette & Gradients */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#160305] via-[#160305]/70 to-[#160305]/85"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#160305_90%)]"></div>
+          {/* Lightened Royal Vignette & Atmospheric Gradients */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#160305] via-[#160305]/35 to-[#160305]/50"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_35%,_rgba(22,3,5,0.75)_100%)]"></div>
         </motion.div>
       </AnimatePresence>
 
       {/* Subtle Victorian Architectural Border Frame */}
-      <div className="absolute inset-4 md:inset-8 border border-[#d4af37]/20 pointer-events-none rounded-3xl z-10 hidden md:block">
-        <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-[#d4af37]/60"></div>
-        <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-[#d4af37]/60"></div>
-        <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-[#d4af37]/60"></div>
-        <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-[#d4af37]/60"></div>
+      <div className="absolute inset-4 md:inset-8 border border-[#d4af37]/25 pointer-events-none rounded-3xl z-10 hidden md:block">
+        <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-[#d4af37]/70"></div>
+        <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-[#d4af37]/70"></div>
+        <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-[#d4af37]/70"></div>
+        <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-[#d4af37]/70"></div>
       </div>
 
       {/* Main Content Container */}
@@ -108,7 +108,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#2a060a]/90 border border-[#d4af37]/40 backdrop-blur-md mb-6 shadow-xl"
+          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#2a060a]/90 border border-[#d4af37]/50 backdrop-blur-md mb-6 shadow-2xl"
         >
           <GiMusicalNotes className="text-[#e5c158] text-sm" />
           <span className="font-cinzel text-xs font-bold tracking-[0.2em] text-[#f5e6a8] uppercase">
@@ -122,7 +122,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="font-cinzel text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.15] mb-4 text-stone-100 max-w-4xl"
+          className="font-cinzel text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.15] mb-4 text-stone-100 max-w-4xl drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]"
         >
           {currentSlide.title}
         </motion.h1>
@@ -138,7 +138,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="font-playfair italic text-lg sm:text-2xl text-[#e5c158] max-w-3xl mx-auto mb-4 font-normal"
+          className="font-playfair italic text-lg sm:text-2xl text-[#f3e5ab] max-w-3xl mx-auto mb-4 font-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
         >
           "{currentSlide.subtitle}"
         </motion.p>
@@ -149,7 +149,7 @@ const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="font-cormorant text-lg sm:text-xl text-[#f0e6d2]/90 max-w-2xl mx-auto leading-relaxed mb-10 font-light"
+          className="font-cormorant text-lg sm:text-xl text-[#f0e6d2] max-w-2xl mx-auto leading-relaxed mb-10 font-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]"
         >
           {currentSlide.description}
         </motion.p>
